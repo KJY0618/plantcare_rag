@@ -1,0 +1,134 @@
+[
+  {
+    "cntnts_no": "12938",
+    "name": "가울테리아",
+    "scientific_name": "Gaultheria procumbens",
+    "english_name": "Checkerberry, Eastern Teaberry, (Spreading) Wintergreen",
+    "distribution_name": "파스향나무 (추천 유통명: 가울테리아)",
+    "family_name": "063051",
+    "origin": "아시아, 아메리카,캐나다",
+    "growth_height": "15",
+    "growth_width": "25",
+    "leaf_form": "화려함, 잎의 질감-중간, 잎의 광택-있음, 상록",
+    "propagation_period": "파종-9~11월/분주-3~5월",
+    "fertilizer_info": "비료를 보통 요구함",
+    "soil_info": "토양 : 중성,산성 / 배수 잘 됨 (Loam,Sand)",
+    "water_spring": "토양 표면이 말랐을때 충분히 관수함",
+    "water_summer": "토양 표면이 말랐을때 충분히 관수함",
+    "water_autumn": "토양 표면이 말랐을때 충분히 관수함",
+    "water_winter": "화분 흙 대부분 말랐을때 충분히 관수함",
+    "winter_min_temp": "0℃ 이하",
+    "manage_level": "경험자",
+    "manage_demand": "낮음 (잘 견딤)",
+    "growth_temp": "16~20℃",
+    "humidity": "40 ~ 70%",
+    "function_info": "진달래과의 작은 관목으로 척박한 산성토양에서 잘 자라며 키는 20cm정도로 포복형이다.  암석정원에 잘 어울린다.",
+    "thumb_url": "https://nongsaro.go.kr/cms_contents/301/12938_MF_REPR_ATTACH_01_TMB.jpg",
+    "image_url": "https://nongsaro.go.kr/cms_contents/301/12938_MF_REPR_ATTACH_01.jpg",
+    "source": "농사로",
+    "fetched_at": "2026-11-20T14:57:50",
+    "tags": {
+      "light": [
+        "중간 광도(800~1",
+        "500 Lux)",
+        "높은 광도(1",
+        "500~10",
+        "000 Lux)"
+      ],
+      "placement": [
+        "거실 창측 (실내깊이 150~300cm)",
+        "발코니 내측 (실내깊이 50~150cm)",
+        "발코니 창측 (실내깊이 0~50cm)"
+      ]
+    },
+    "id": 1
+  },
+  {
+    "cntnts_no": "12954",
+    "name": "개운죽",
+    "scientific_name": "Dracaena sanderiana 'Virens'",
+    "english_name": "Sander's dracaena",
+    "distribution_name": "개운죽",
+    "family_name": "063033",
+    "origin": "서부 아프리카",
+    "growth_height": "90",
+    "growth_width": "30",
+    "leaf_form": null,
+    "propagation_period": null,
+    "fertilizer_info": "비료를 거의 요구하지않음",
+    "soil_info": null,
+    "water_spring": "흙을 촉촉하게 유지함(물에 잠기지 않도록 주의)",
+    "water_summer": "흙을 촉촉하게 유지함(물에 잠기지 않도록 주의)",
+    "water_autumn": "흙을 촉촉하게 유지함(물에 잠기지 않도록 주의)",
+    "water_winter": "토양 표면이 말랐을때 충분히 관수함",
+    "winter_min_temp": "13℃ 이상",
+    "manage_level": "초보자",
+    "manage_demand": "낮음 (잘 견딤)",
+    "growth_temp": "16~20℃",
+    "humidity": "40 ~ 70%",
+    "function_info": "화분에 심을 경우에는 부드럽고 배수가 잘 되는 토양에 심음\n※ 개운죽은 관엽으로 분류되어 있지만 사실은 잎보다 잎이 떨어진 후 대나무처럼 보이는 줄기가 더욱 관상의 대상이 된다. 직선보다 곡선의 줄기가 필요한 경우에는 줄기를 곡선으로 유도할 수 있다.",
+    "thumb_url": "https://nongsaro.go.kr/cms_contents/301/12954_MF_REPR_ATTACH_01_TMB.jpg",
+    "image_url": "https://nongsaro.go.kr/cms_contents/301/12954_MF_REPR_ATTACH_01.jpg",
+    "source": "농사로",
+    "fetched_at": "2026-11-20T14:57:50",
+    "tags": {
+      "light": [
+        "낮은 광도(300~800 Lux)",
+        "중간 광도(800~1",
+        "500 Lux)",
+        "높은 광도(1",
+        "500~10",
+        "000 Lux)"
+      ],
+      "placement": [
+        "거실 내측 (실내깊이 300~500cm)",
+        "거실 창측 (실내깊이 150~300cm)",
+        "발코니 내측 (실내깊이 50~150cm)",
+        "발코니 창측 (실내깊이 0~50cm)"
+      ]
+    },
+    "id": 2
+  },
+  {
+    "cntnts_no": "12955",
+    "name": "골드크레스트 '윌마'",
+    "scientific_name": "Cupressus macrocarpa 'Wilma'",
+    "english_name": "Monterey cypress",
+    "distribution_name": "율마, 골드크리스터 (추천 유통명: 윌마)",
+    "family_name": "063054",
+    "origin": "북부 아메리카",
+    "growth_height": "100",
+    "growth_width": "50",
+    "leaf_form": null,
+    "propagation_period": null,
+    "fertilizer_info": "비료를 보통 요구함",
+    "soil_info": null,
+    "water_spring": "토양 표면이 말랐을때 충분히 관수함",
+    "water_summer": "토양 표면이 말랐을때 충분히 관수함",
+    "water_autumn": "토양 표면이 말랐을때 충분히 관수함",
+    "water_winter": "화분 흙 대부분 말랐을때 충분히 관수함",
+    "winter_min_temp": "10℃",
+    "manage_level": "경험자",
+    "manage_demand": "보통 (약간 잘 견딤)",
+    "growth_temp": "16~20℃",
+    "humidity": "40 ~ 70%",
+    "function_info": "※ Cupressus macrocarpa 품종 중에 'wilma', 'goldcrest' 등의 품종이 있는데, 우리가 사용하고 있는 율마라는 이름은 “wilma\"에서 나온 것으로 생각된다. 따라서 율마라는 이름이 윌마로 교정되어야하지 않을까 고려된다.바람에 약하며 줄기 아랫부분의 잎이 떨어지면 황량한 느낌을 주지만 토피아리 형식으로 키울 수도 있다.크리스마스 트리로 실내에 장식하면 좋다.",
+    "thumb_url": "https://nongsaro.go.kr/cms_contents/301/12955_MF_REPR_ATTACH_01_TMB.jpg",
+    "image_url": "https://nongsaro.go.kr/cms_contents/301/12955_MF_REPR_ATTACH_01.jpg",
+    "source": "농사로",
+    "fetched_at": "2026-11-20T14:57:50",
+    "tags": {
+      "light": [
+        "높은 광도(1",
+        "500~10",
+        "000 Lux)"
+      ],
+      "placement": [
+        "거실 창측 (실내깊이 150~300cm)",
+        "발코니 내측 (실내깊이 50~150cm)",
+        "발코니 창측 (실내깊이 0~50cm)"
+      ]
+    },
+    "id": 3
+  }
+]

@@ -1,0 +1,14 @@
+[
+  {
+    "id": 1,
+    "species_id": 1,
+    "custom_species_name": null,
+    "nickname": "롯데리아",
+    "location": "거실 창가",
+    "purchase_date": "2026-11-06",
+    "water_interval_days": 3,
+    "photo_path": "ca7458a3f39a40178092ec4d19cb74e7.jpg",
+    "created_at": "2026-11-20T17:19:27",
+    "updated_at": "2026-11-20T17:19:27"
+  }
+]

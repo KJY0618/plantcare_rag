@@ -1,0 +1,1 @@
+-- 테이블 4개: plant_species, species_tags, plants, care_logs (A)
