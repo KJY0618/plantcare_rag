@@ -313,10 +313,6 @@ def water(
 
     return result
 
-<<<<<<< HEAD
-
-# ==========================================
-=======
 # 내 식물 상세 (도감 정보 + 다음 물주기 + 최근 기록 5건)
 @app.get("/plants/{plant_id}")
 def plant_detail(plant_id: int):
@@ -364,6 +360,5 @@ def plant_logs(plant_id: int, log_type: str | None = None):
         raise HTTPException(404, "없는 식물입니다.")
     return care_logs.get_log_list(plant_id, log_type)
 
->>>>>>> origin/main
 # ===== 식물 도우미 (A, 2단계) =====
 # ==========================================

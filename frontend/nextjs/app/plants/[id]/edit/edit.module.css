@@ -1,0 +1,234 @@
+
+/* =========================================
+   내 식물 수정 페이지 (B 담당)
+========================================= */
+
+/* 페이지 전체 */
+.container {
+    min-height: 100vh;
+    background: #f8faf6;
+    padding: 50px 20px 80px;
+}
+
+/* 중앙 정렬 */
+.content {
+    max-width: 720px;
+    margin: 0 auto;
+}
+
+/* 이전 페이지 이동 */
+.backLink {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: #68876e;
+    font-size: 14px;
+    font-weight: 500;
+    text-decoration: none;
+    margin-bottom: 30px;
+    transition: color 0.2s;
+}
+
+.backLink:hover {
+    color: #345c45;
+}
+
+/* =========================================
+   페이지 제목
+========================================= */
+
+.header {
+    margin-bottom: 32px;
+}
+
+.subtitle {
+    color: #86a789;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    margin-bottom: 10px;
+}
+
+.title {
+    font-size: 34px;
+    font-weight: 700;
+    color: #345c45;
+    letter-spacing: -1px;
+    margin-bottom: 12px;
+}
+
+.description {
+    font-size: 15px;
+    color: #7b877d;
+    line-height: 1.7;
+}
+
+/* =========================================
+   수정 폼 카드
+========================================= */
+
+.formCard {
+    background: #ffffff;
+    border: 1px solid #e4ebe2;
+    border-radius: 22px;
+    padding: 38px;
+    box-shadow: 0 8px 30px rgba(52, 92, 69, 0.05);
+}
+
+/* PlantForm의 form */
+.formCard :global(form) {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+/* 입력 항목 제목 */
+.formCard :global(label) {
+    color: #405a47;
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 1.6;
+}
+
+/* 텍스트·숫자·날짜 입력 */
+.formCard :global(input:not([type="file"]):not([type="checkbox"]):not([type="radio"])) {
+    border: 1px solid #dce6da;
+    border-radius: 10px;
+    background: #fbfcfa;
+    color: #344b3a;
+    font-family: inherit;
+    font-size: 14px;
+    outline: none;
+    box-sizing: border-box;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.formCard :global(input:not([type="file"]):not([type="checkbox"]):not([type="radio"]):focus) {
+    border-color: #86a789;
+    box-shadow: 0 0 0 3px rgba(134, 167, 137, 0.15);
+}
+
+/* 입력 안내 문구 */
+.formCard :global(input::placeholder) {
+    color: #a2ada3;
+}
+
+/* 사진 업로드 */
+.formCard :global(input[type="file"]) {
+    border: 1px dashed #aac5a8;
+    border-radius: 10px;
+    padding: 14px;
+    background: #f5f9f3;
+    color: #607764;
+    font-size: 13px;
+    box-sizing: border-box;
+}
+
+/* 현재 사진 및 미리보기 */
+.formCard :global(img) {
+    display: block;
+    max-width: 100%;
+    border: 1px solid #e0e9dd;
+    border-radius: 12px;
+    object-fit: cover;
+}
+
+/* 사진 삭제 체크박스 */
+.formCard :global(input[type="checkbox"]) {
+    accent-color: #345c45;
+    cursor: pointer;
+}
+
+/* =========================================
+   수정하기 버튼
+========================================= */
+
+.formCard :global(button[type="submit"]) {
+    width: 100%;
+    margin-top: 24px;
+    padding: 16px;
+    background: #345c45;
+    color: #ffffff;
+    font-family: inherit;
+    font-size: 15px;
+    font-weight: 600;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.2s;
+}
+
+.formCard :global(button[type="submit"]:hover:not(:disabled)) {
+    background: #254632;
+    transform: translateY(-2px);
+}
+
+.formCard :global(button[type="submit"]:disabled) {
+    background: #a5b7a5;
+    cursor: not-allowed;
+}
+
+/* =========================================
+   로딩 및 오류 화면
+========================================= */
+
+.messageCard {
+    background: #ffffff;
+    border: 1px solid #e1e9df;
+    border-radius: 18px;
+    padding: 60px 25px;
+    text-align: center;
+    color: #667c6a;
+}
+
+.messageCard h2 {
+    font-size: 20px;
+    margin-bottom: 14px;
+    color: #345c45;
+}
+
+.messageCard p {
+    font-size: 14px;
+    line-height: 1.7;
+}
+
+.errorText {
+    color: #bc5454;
+}
+
+.returnButton {
+    display: inline-block;
+    margin-top: 20px;
+    padding: 12px 20px;
+    background: #345c45;
+    color: #ffffff;
+    text-decoration: none;
+    border-radius: 10px;
+}
+
+/* =========================================
+   모바일 반응형
+========================================= */
+
+@media (max-width: 600px) {
+    .container {
+        padding: 25px 15px 50px;
+    }
+
+    .title {
+        font-size: 27px;
+    }
+
+    .description {
+        font-size: 13px;
+    }
+
+    .formCard {
+        padding: 22px 18px;
+        border-radius: 16px;
+    }
+
+    .formCard :global(button[type="submit"]) {
+        padding: 14px;
+    }
+}
