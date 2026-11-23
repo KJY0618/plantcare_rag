@@ -1,0 +1,160 @@
+/* 내 식물 상세 화면 */
+.page {
+    max-width: 640px;
+    margin: 0 auto;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.state {
+    max-width: 640px;
+    margin: 40px auto;
+    padding: 16px;
+    text-align: center;
+    color: #555;
+}
+
+.head {
+    text-align: center;
+}
+
+.photo {
+    width: 100%;
+    max-height: 320px;
+    object-fit: cover;
+    border-radius: 12px;
+}
+
+.noPhoto {
+    height: 160px;
+    border-radius: 12px;
+    background: #eef3ee;
+    color: #789;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.nickname {
+    margin: 12px 0 4px;
+    font-size: 26px;
+}
+
+.sub {
+    margin: 4px 0;
+    color: #555;
+    line-height: 1.5;
+}
+
+.card {
+    border: 1px solid #e0e6e0;
+    border-radius: 12px;
+    padding: 14px;
+    background: #fff;
+}
+
+.card h2 {
+    margin: 0 0 8px;
+    font-size: 18px;
+}
+
+.dday {
+    margin: 0 0 6px;
+    font-size: 24px;
+    font-weight: 700;
+    color: #2f6f46;
+}
+
+.buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 12px;
+}
+
+/* 버튼은 손가락으로 누르기 쉽게 높이 44px 이상 */
+.button,
+.primary,
+.danger {
+    min-height: 44px;
+    padding: 0 16px;
+    border-radius: 10px;
+    font-size: 15px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+}
+
+.button {
+    border: 1px solid #b9c7b9;
+    background: #fff;
+    color: #333;
+}
+
+.primary {
+    border: none;
+    background: #3f8f5a;
+    color: #fff;
+}
+
+.danger {
+    border: 1px solid #d9534f;
+    background: #fff;
+    color: #d9534f;
+}
+
+.primary:disabled,
+.button:disabled,
+.danger:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.message {
+    margin: 10px 0 0;
+    color: #2f6f46;
+}
+
+.info {
+    margin: 0;
+    padding-left: 18px;
+    line-height: 1.7;
+}
+
+.form {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 8px;
+}
+
+.form textarea {
+    padding: 8px;
+    border: 1px solid #c8d2c8;
+    border-radius: 8px;
+    font-size: 15px;
+    font-family: inherit;
+    resize: vertical;
+}
+
+.error {
+    margin: 0;
+    color: #d9534f;
+}
+
+.rowBetween {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+}
+
+.bottom {
+    display: flex;
+    gap: 8px;
+    justify-content: flex-end;
+    padding-bottom: 24px;
+}
