@@ -1,0 +1,6 @@
+.form { display: grid; gap: 16px; max-width: 480px; margin: 0 auto; padding: 16px; }
+.form label { display: grid; gap: 6px; }
+.form input { width: 100%; padding: 10px; font-size: 16px; box-sizing: border-box; }
+.form button { padding: 12px; font-size: 16px; }
+.error { color: crimson; }
+.hint { color: #666; font-size: 14px; }
