@@ -1,0 +1,154 @@
+
+/* 내 식물 목록 전체 */
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 50px 30px;
+    color: #345c45;
+}
+
+/* 상단 제목 */
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+    margin-bottom: 40px;
+}
+
+.subtitle {
+    color: #86a789;
+    font-size: 13px;
+    letter-spacing: 2px;
+    font-weight: bold;
+}
+
+.header h1 {
+    font-size: 34px;
+    margin: 12px 0;
+}
+
+.description {
+    font-size: 15px;
+    color: #777;
+}
+
+/* 식물 추가 버튼 */
+
+.addButton {
+    display: inline-block;
+    padding: 14px 24px;
+    background-color: #345c45;
+    border-radius: 10px;
+    color: white;
+    text-decoration: none;
+    white-space: nowrap;
+}
+
+.addButton:hover {
+    background-color: #254432;
+}
+
+/* 등록된 식물 수 */
+
+.summary {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #e2e8de;
+    font-size: 14px;
+}
+
+.summary strong {
+    font-size: 20px;
+    color: #345c45;
+}
+
+.refreshButton {
+    border: 1px solid #d4e3d4;
+    background: white;
+    color: #345c45;
+    border-radius: 8px;
+    padding: 8px 14px;
+    cursor: pointer;
+}
+
+.refreshButton:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* 식물 카드 배치 */
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(
+        auto-fill,
+        minmax(230px, 1fr)
+    );
+    gap: 24px;
+}
+
+/* 로딩, 오류, 빈 결과 */
+
+.message {
+    text-align: center;
+    padding: 75px 20px;
+    border: 1px dashed #d4e3d4;
+    background: #f8faf6;
+    border-radius: 18px;
+    color: #555;
+}
+
+.message h2 {
+    color: #345c45;
+    margin: 15px 0;
+}
+
+.emptyIcon {
+    font-size: 55px;
+    margin-bottom: 15px;
+}
+
+.emptyButton,
+.retryButton {
+    display: inline-block;
+    margin-top: 20px;
+    padding: 12px 24px;
+    border: none;
+    border-radius: 10px;
+    background: #345c45;
+    color: white;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+/* 모바일 반응형 */
+
+@media (max-width: 600px) {
+
+    .container {
+        padding: 30px 16px;
+    }
+
+    .header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .header h1 {
+        font-size: 28px;
+    }
+
+    .grid {
+        grid-template-columns: repeat(
+            2,
+            minmax(0, 1fr)
+        );
+        gap: 12px;
+    }
+}
