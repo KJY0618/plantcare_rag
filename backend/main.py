@@ -89,4 +89,51 @@ def water(plant_id: int, body: WaterRequest | None = None):
         raise HTTPException(409, "아직 물 줄 날이 아닙니다.")      # ← 추가
     return result
 
+# 내 식물 상세 (도감 정보 + 다음 물주기 + 최근 기록 5건)
+@app.get("/plants/{plant_id}")
+def plant_detail(plant_id: int):
+    result = care_logs.get_plant_detail(plant_id)
+    if result is None:
+        raise HTTPException(404, "없는 식물입니다.")
+    return result
+
+# 비료 / 분갈이 / 이상 기록 저장 (물주기는 /water 를 사용)
+@app.post("/plants/{plant_id}/logs", status_code=201)
+async def add_log(
+    plant_id: int,
+    log_type: str = Form(...),
+    logged_at: date | None = Form(None),
+    memo: str | None = Form(None),
+    photo: UploadFile | None = File(None),
+):
+    if log_type not in ["fertilizer", "repot", "issue"]:
+        raise HTTPException(422, "기록 종류는 fertilizer, repot, issue 중 하나여야 합니다.")
+    if logged_at is not None and logged_at > date.today():
+        raise HTTPException(422, "기록 날짜는 오늘 이전이어야 합니다.")
+    if care_logs.find_plant(plant_id) is None:
+        raise HTTPException(404, "없는 식물입니다.")
+
+    memo = (memo or "").strip()
+    if memo == "":
+        memo = None
+    has_photo = photo is not None and bool(photo.filename)
+
+    # 이상 기록은 메모나 사진 중 하나는 있어야 함
+    if log_type == "issue" and memo is None and not has_photo:
+        raise HTTPException(422, "이상 기록은 메모나 사진 중 하나는 있어야 합니다.")
+
+    photo_path = await save_photo(photo)    # 형식 오류 415, 용량 초과 413
+    new_log = care_logs.add_log(plant_id, log_type, logged_at, memo, photo_path)
+    return care_logs.to_log_item(new_log)
+
+
+# 식물의 케어 기록 목록 (최근 기록이 먼저). ?log_type=issue 처럼 종류로 거를 수 있음
+@app.get("/plants/{plant_id}/logs")
+def plant_logs(plant_id: int, log_type: str | None = None):
+    if log_type is not None and log_type not in ["water", "fertilizer", "repot", "issue"]:
+        raise HTTPException(422, "기록 종류는 water, fertilizer, repot, issue 중 하나여야 합니다.")
+    if care_logs.find_plant(plant_id) is None:
+        raise HTTPException(404, "없는 식물입니다.")
+    return care_logs.get_log_list(plant_id, log_type)
+
 # ===== 식물 도우미 (A, 2단계) =====
