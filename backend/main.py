@@ -7,6 +7,11 @@ from fastapi.staticfiles import StaticFiles
 from service import plants as plants_service
 from service import species as species_service
 from service.photos import UPLOAD_DIR, save_photo
+from service import care_logs
+from datetime import date                      
+from fastapi import HTTPException              
+from pydantic import BaseModel                  
+
 
 app = FastAPI(title="PlantCare API")
 # app = FastAPI() 아래
@@ -58,6 +63,30 @@ async def create_plant(
 
 
 # ===== 케어 기록·오늘 할 일·내 식물 상세 (C) =====
+@app.get("/today")
+def today():
+    return care_logs.get_today_list()
 
+# 클라이언트가 보내는 값 : 물 준 날짜 (비우면 오늘)
+class WaterRequest(BaseModel):
+    logged_at: date | None = None
+
+
+@app.post("/plants/{plant_id}/water")
+def water(plant_id: int, body: WaterRequest | None = None):
+    logged_at = None
+    if body is not None:
+        logged_at = body.logged_at
+
+    # 오늘보다 미래 날짜는 물 줄 수 없음
+    if logged_at is not None and logged_at > date.today():
+        raise HTTPException(422, "물 준 날짜는 오늘 이전이어야 합니다.")
+
+    result = care_logs.water_plant(plant_id, logged_at)
+    if result is None:
+        raise HTTPException(404, "없는 식물입니다.")
+    if result == "too_early":                                    # ← 추가
+        raise HTTPException(409, "아직 물 줄 날이 아닙니다.")      # ← 추가
+    return result
 
 # ===== 식물 도우미 (A, 2단계) =====
