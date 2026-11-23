@@ -10,3 +10,6 @@ backend/uploads/*
 backend/chroma_db/*
 !backend/uploads/.gitkeep
 !backend/chroma_db/.gitkeep
+backend/storage/plants.json
+backend/storage/care_logs.json
+.vscode/
