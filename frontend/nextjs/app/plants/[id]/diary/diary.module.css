@@ -1,0 +1,58 @@
+/* 케어 일기 화면 */
+.page {
+    max-width: 640px;
+    margin: 0 auto;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.top {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+}
+
+.title {
+    margin: 0;
+    font-size: 24px;
+}
+
+.filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+/* 버튼은 손가락으로 누르기 쉽게 높이 44px */
+.filter,
+.active {
+    min-height: 44px;
+    padding: 0 16px;
+    border-radius: 22px;
+    font-size: 15px;
+    cursor: pointer;
+}
+
+.filter {
+    border: 1px solid #b9c7b9;
+    background: #fff;
+    color: #333;
+}
+
+.active {
+    border: 1px solid #3f8f5a;
+    background: #3f8f5a;
+    color: #fff;
+}
+
+.state {
+    color: #777;
+    margin: 0;
+}
+
+.error {
+    color: #d9534f;
+    margin: 0;
+}
