@@ -18,6 +18,9 @@ export default function SpeciesPage() {
   // 식물 도감 목록
   const [species, setSpecies] = useState([]);
 
+  // 전체 식물 개수
+  const [total, setTotal] = useState(0);
+
   // 로딩 상태
   const [loading, setLoading] = useState(true);
 
@@ -33,53 +36,25 @@ export default function SpeciesPage() {
   // 식물 광요구도 필터
   const [light, setLight] = useState("");
 
-
-  // 검색 요청 순서를 관리하는 변수 (가장 최근 검색 결과만 반영하기 위해 사용)
+  // 검색 요청 순서를 관리하는 변수
   const searchRequestId = useRef(0);
 
   // 한 페이지에 표시할 식물 수
   const itemsPerPage = 10;
 
   // 전체 페이지 수
-  const totalPages = Math.ceil(species.length / itemsPerPage);
-
-  // 현재 페이지에 표시할 데이터 계산
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const endIndex = startIndex + itemsPerPage;
-  const currentSpecies = species.slice(startIndex, endIndex);
+  const totalPages = Math.ceil(total / itemsPerPage);
 
 
-  // 1. 식물 도감 전체 조회
-  async function loadSpecies() {
+  // =====================================
+  // 1. 식물 도감 조회
+  // =====================================
 
-    setLoading(true);
-    setError("");
-
-    try {
-
-      // 백엔드 API 호출
-      const data = await getAllSpecies();
-
-      // 서버에서 받아온 도감 목록 저장
-      setSpecies(data);
-
-      // 첫 페이지로 이동
-      setCurrentPage(1);
-
-    } catch (err) {
-
-      console.error(err);
-      setError("식물 도감 정보를 불러오지 못했습니다.");
-
-    } finally {
-
-      setLoading(false);
-    }
-  }
-
-
-  // 2. 식물 도감 검색
-  async function handleSearch(selectedLight = light) {
+  async function loadSpecies(
+    page = 1,
+    searchKeyword = keyword,
+    selectedLight = light
+  ) {
 
     // 검색 요청 순서 관리
     const requestId = ++searchRequestId.current;
@@ -88,42 +63,75 @@ export default function SpeciesPage() {
     setError("");
 
     try {
-      // 선택한 광도값을 직접 전달
-      const data = await getAllSpecies(keyword, selectedLight);
+
+      // 백엔드 API 호출
+      const data = await getAllSpecies(
+        searchKeyword,
+        selectedLight,
+        page,
+        itemsPerPage
+      );
 
       // 가장 최근 요청이 아니면 결과 반영하지 않음
       if (requestId !== searchRequestId.current) return;
 
-      setSpecies(data);
-      setCurrentPage(1);
+      // 서버에서 받아온 현재 페이지 데이터 저장
+      setSpecies(data.items);
+
+      // 서버에서 받아온 전체 데이터 개수 저장
+      setTotal(data.total);
+
+      // 현재 페이지 저장
+      setCurrentPage(page);
 
     } catch (err) {
+
       if (requestId !== searchRequestId.current) return;
 
       console.error(err);
-      setError("식물 검색에 실패했습니다.");
+      setError("식물 도감 정보를 불러오지 못했습니다.");
 
     } finally {
+
       if (requestId === searchRequestId.current) {
         setLoading(false);
       }
     }
   }
 
+
+  // =====================================
+  // 2. 식물 도감 검색
+  // =====================================
+
+  function handleSearch(selectedLight = light) {
+
+    // 검색 시 첫 페이지부터 조회
+    loadSpecies(1, keyword, selectedLight);
+  }
+
+
+  // =====================================
   // 3. 페이지가 처음 열릴 때 실행
+  // =====================================
+
   useEffect(() => {
-    loadSpecies();
+    loadSpecies(1, "", "");
   }, []);
 
 
+  // =====================================
   // 4. 페이지 이동
+  // =====================================
+
   function changePage(page) {
 
     if (page < 1 || page > totalPages) {
       return;
     }
 
-    setCurrentPage(page);
+    // 선택한 페이지를 백엔드에 요청
+    loadSpecies(page);
 
     window.scrollTo({
       top: 0,
@@ -132,7 +140,10 @@ export default function SpeciesPage() {
   }
 
 
+  // =====================================
   // 5. 화면 렌더링
+  // =====================================
+
   return (
     <main className={styles.container}>
 
@@ -171,7 +182,7 @@ export default function SpeciesPage() {
 
             <button
               type="button"
-              onClick={handleSearch}
+              onClick={() => handleSearch()}
             >
               검색
             </button>
@@ -199,11 +210,11 @@ export default function SpeciesPage() {
       </header>
 
 
-      {/* 식물 개수 및 새로고침 */}
+      {/* 식물 개수 */}
       <div className={styles.summary}>
 
         <div>
-          총 <strong>{species.length}</strong>개의 식물
+          총 <strong>{total}</strong>개의 식물
         </div>
 
       </div>
@@ -225,7 +236,7 @@ export default function SpeciesPage() {
           <button
             type="button"
             className={styles.retryButton}
-            onClick={loadSpecies}
+            onClick={() => loadSpecies(currentPage, keyword, light)}
           >
             다시 시도
           </button>
@@ -243,7 +254,7 @@ export default function SpeciesPage() {
 
         <section className={styles.grid}>
 
-          {currentSpecies.map((item) => (
+          {species.map((item) => (
             <SpeciesCard
               key={item.id}
               species={item}
@@ -279,10 +290,11 @@ export default function SpeciesPage() {
             <button
               key={page}
               type="button"
-              className={`${styles.pageButton} ${currentPage === page
-                ? styles.activePage
-                : ""
-                }`}
+              className={`${styles.pageButton} ${
+                currentPage === page
+                  ? styles.activePage
+                  : ""
+              }`}
               onClick={() => changePage(page)}
             >
               {page}

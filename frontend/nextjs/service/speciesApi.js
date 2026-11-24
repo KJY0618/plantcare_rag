@@ -3,12 +3,20 @@ const BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
 // =====================================
 // 1. 식물 도감 전체 조회
 // =====================================
-export async function getAllSpecies(keyword = "", light = "") {
+export async function getAllSpecies(
+    keyword = "",
+    light = "",
+    page = 1,
+    size = 10
+) {
 
     const params = new URLSearchParams();
 
     if (keyword) params.append("keyword", keyword);
     if (light) params.append("light", light);
+
+    params.append("page", page);
+    params.append("size", size);
 
     const res = await fetch(`${BASE}/species?${params.toString()}`);
 
