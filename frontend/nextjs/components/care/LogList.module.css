@@ -49,3 +49,27 @@
     color: #777;
     margin: 0;
 }
+
+/* 날짜와 삭제 버튼을 오른쪽에 나란히 */
+.right {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* 삭제 버튼 : 작지만 손가락으로 누를 수 있게 높이 36px 이상 */
+.delete {
+    min-height: 36px;
+    padding: 0 12px;
+    border: 1px solid #e3b4b2;
+    border-radius: 8px;
+    background: #fff;
+    color: #c9302c;
+    font-size: 13px;
+    cursor: pointer;
+}
+
+.delete:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}

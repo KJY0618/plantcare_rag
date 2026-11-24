@@ -7,10 +7,11 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 
-import LogList from "@/components/care/LogList";
+import LogList, { TYPE_LABEL } from "@/components/care/LogList";
 import {
     addLog,
     ddayText,
+    deleteLog,
     deletePlant,
     getPlantDetail,
     makePhotoUrl,
@@ -32,6 +33,35 @@ function showTags(tags) {
         return tags.join(", ");
     }
     return "정보 없음";
+}
+
+// 오늘 날짜를 "2026-11-24" 글자로 만듦 (서버가 보내는 기록 날짜와 같은 모양)
+function todayString() {
+    const now = new Date();
+    const month = String(now.getMonth() + 1).padStart(2, "0");   // 1 → "01"
+    const day = String(now.getDate()).padStart(2, "0");
+    return now.getFullYear() + "-" + month + "-" + day;
+}
+
+// "2026-11-10" 이 오늘로부터 며칠 전인지 계산
+function daysAgo(dateString) {
+    const parts = dateString.split("-");
+    const date = new Date(Number(parts[0]), Number(parts[1]) - 1, Number(parts[2]));
+    const now = new Date();
+    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    return Math.round((today - date) / (1000 * 60 * 60 * 24));   // 밀리초 차이를 일 수로 변경
+}
+
+// 마지막 기록 날짜를 화면 글자로 변경 (예: "2026-11-10 (14일 전)")
+function lastText(dateString) {
+    if (!dateString) {
+        return "아직 기록이 없어요";
+    }
+    const days = daysAgo(dateString);
+    if (days === 0) {
+        return dateString + " (오늘)";
+    }
+    return dateString + " (" + days + "일 전)";
 }
 
 export default function PlantDetailPage() {
@@ -88,9 +118,13 @@ export default function PlantDetailPage() {
         }
     }
 
-    // 비료 / 분갈이 버튼 (오늘 날짜로 바로 저장)
-    async function handleSimpleLog(logType, doneText) {
+    // 비료 / 분갈이 버튼 (확인창에서 "확인"을 누르면 오늘 날짜로 저장)
+    //   confirmText : 실수로 누르는 것을 막으려고 먼저 물어보는 글자
+    async function handleSimpleLog(logType, doneText, confirmText) {
         if (saving) {
+            return;
+        }
+        if (!window.confirm(confirmText)) {
             return;
         }
         setSaving(true);
@@ -100,6 +134,31 @@ export default function PlantDetailPage() {
             formData.append("log_type", logType);
             await addLog(plantId, formData);
             setMessage(doneText);
+            await loadPlant();
+        } catch (e) {
+            setMessage(e.message);
+        } finally {
+            setSaving(false);
+        }
+    }
+
+    // 기록 1건 삭제 (잘못 누른 기록 되돌리기)
+    async function handleDeleteLog(log) {
+        if (saving) {
+            return;
+        }
+        let question = log.logged_at + " " + TYPE_LABEL[log.log_type] + " 기록을 삭제할까요?";
+        if (log.log_type === "water") {
+            question = question + "\n물주기 기록을 지우면 다음 물주기 날짜가 바뀌어요.";
+        }
+        if (!window.confirm(question)) {
+            return;
+        }
+        setSaving(true);
+        setMessage("");
+        try {
+            await deleteLog(plantId, log.id);
+            setMessage("기록을 삭제했어요.");
             await loadPlant();
         } catch (e) {
             setMessage(e.message);
@@ -199,6 +258,18 @@ export default function PlantDetailPage() {
     }
     const photoUrl = makePhotoUrl(plant.photo_url);
 
+    // 오늘 이미 비료 / 분갈이를 기록했으면 버튼 잠금 (같은 날 여러 번 누르는 실수 방지)
+    const today = todayString();
+    const fertilizerDone = plant.last_fertilized_at === today;
+    const repotDone = plant.last_repotted_at === today;
+
+    // 확인창에 보여 줄 마지막 기록 안내
+    const fertilizerConfirm =
+        "오늘 비료를 줬다고 기록할까요?\n마지막 비료: " + lastText(plant.last_fertilized_at);
+    const repotConfirm =
+        "분갈이는 자주 하지 않는 작업이에요. 오늘 분갈이를 했다고 기록할까요?\n마지막 분갈이: " +
+        lastText(plant.last_repotted_at);
+
     // 물주기 버튼 : 아직 물 줄 날이 아니면(D-day 가 1 이상) 잠금
     const waterLocked = plant.d_day !== null && plant.d_day > 0;
 
@@ -238,19 +309,30 @@ export default function PlantDetailPage() {
                     </button>
                     <button
                         className={styles.button}
-                        onClick={() => handleSimpleLog("fertilizer", "비료 준 기록을 저장했어요.")}
-                        disabled={saving}
+                        onClick={() =>
+                            handleSimpleLog("fertilizer", "비료 준 기록을 저장했어요.", fertilizerConfirm)
+                        }
+                        disabled={saving || fertilizerDone}
                     >
-                        비료 줬어요
+                        {fertilizerDone ? "오늘 비료 기록함" : "비료 줬어요"}
                     </button>
                     <button
                         className={styles.button}
-                        onClick={() => handleSimpleLog("repot", "분갈이 기록을 저장했어요.")}
-                        disabled={saving}
+                        onClick={() =>
+                            handleSimpleLog("repot", "분갈이 기록을 저장했어요.", repotConfirm)
+                        }
+                        disabled={saving || repotDone}
                     >
-                        분갈이 했어요
+                        {repotDone ? "오늘 분갈이 기록함" : "분갈이 했어요"}
                     </button>
                 </div>
+
+                {/* 마지막으로 한 날짜 : 실수로 또 누르기 전에 눈으로 확인 */}
+                <p className={styles.last}>
+                    마지막 비료 : {lastText(plant.last_fertilized_at)}
+                    <br />
+                    마지막 분갈이 : {lastText(plant.last_repotted_at)}
+                </p>
 
                 {message && <p className={styles.message}>{message}</p>}
             </section>
@@ -316,7 +398,7 @@ export default function PlantDetailPage() {
                     <h2>최근 기록</h2>
                     <Link href={"/plants/" + plantId + "/diary"}>전체 보기</Link>
                 </div>
-                <LogList logs={plant.recent_logs} />
+                <LogList logs={plant.recent_logs} onDelete={handleDeleteLog} disabled={saving} />
             </section>
 
             {/* 수정 / 삭제 */}
