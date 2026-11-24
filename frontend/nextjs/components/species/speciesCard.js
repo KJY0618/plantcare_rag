@@ -13,7 +13,7 @@ export default function SpeciesCard({ species }) {
   const [imgFailed, setImgFailed] = useState(false);
 
   // 농사로에서 받은 사진 주소
-  const src = species.thumb_url || species.image_url;
+  const src = species.image_url || species.thumb_url;
 
   return (
     <Link
@@ -33,6 +33,14 @@ export default function SpeciesCard({ species }) {
           src={src}
           alt={species.name}
           onError={() => setImgFailed(true)}
+          onLoad={(e) => {
+            console.log(
+              "이미지 원본 크기:",
+              e.target.naturalWidth,
+              "x",
+              e.target.naturalHeight
+            );
+          }}
           style={{
             width: "100%",
             height: "140px",
