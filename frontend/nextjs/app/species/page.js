@@ -2,7 +2,7 @@
 "use client";
 
 // React Hook
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 
 // 식물 도감 카드 컴포넌트
 import SpeciesCard from "../../components/species/speciesCard";
@@ -11,7 +11,7 @@ import SpeciesCard from "../../components/species/speciesCard";
 import { getAllSpecies } from "../../service/speciesApi";
 
 // CSS
-import styles from "./page.module.css";
+import styles from "./species.module.css";
 
 export default function SpeciesPage() {
 
@@ -32,6 +32,10 @@ export default function SpeciesPage() {
 
   // 식물 광요구도 필터
   const [light, setLight] = useState("");
+
+
+  // 검색 요청 순서를 관리하는 변수 (가장 최근 검색 결과만 반영하기 위해 사용)
+  const searchRequestId = useRef(0);
 
   // 한 페이지에 표시할 식물 수
   const itemsPerPage = 10;
@@ -75,33 +79,36 @@ export default function SpeciesPage() {
 
 
   // 2. 식물 도감 검색
-  async function handleSearch() {
+  async function handleSearch(selectedLight = light) {
+
+    // 검색 요청 순서 관리
+    const requestId = ++searchRequestId.current;
 
     setLoading(true);
     setError("");
 
     try {
+      // 선택한 광도값을 직접 전달
+      const data = await getAllSpecies(keyword, selectedLight);
 
-      // 검색 조건을 전달하여 백엔드 API 호출
-      const data = await getAllSpecies(keyword, light);
+      // 가장 최근 요청이 아니면 결과 반영하지 않음
+      if (requestId !== searchRequestId.current) return;
 
-      // 검색 결과 목록 저장
       setSpecies(data);
-
-      // 첫 페이지로 이동
       setCurrentPage(1);
 
     } catch (err) {
+      if (requestId !== searchRequestId.current) return;
 
       console.error(err);
       setError("식물 검색에 실패했습니다.");
 
     } finally {
-
-      setLoading(false);
+      if (requestId === searchRequestId.current) {
+        setLoading(false);
+      }
     }
   }
-
 
   // 3. 페이지가 처음 열릴 때 실행
   useEffect(() => {
@@ -174,7 +181,11 @@ export default function SpeciesPage() {
           <div className={styles.filterArea}>
             <select
               value={light}
-              onChange={(e) => setLight(e.target.value)}
+              onChange={(e) => {
+                const selectedLight = e.target.value;
+                setLight(selectedLight);
+                handleSearch(selectedLight);
+              }}
             >
               <option value="">전체 광요구도</option>
               <option value="낮은 광도">낮은 광도</option>
@@ -268,11 +279,10 @@ export default function SpeciesPage() {
             <button
               key={page}
               type="button"
-              className={`${styles.pageButton} ${
-                currentPage === page
-                  ? styles.activePage
-                  : ""
-              }`}
+              className={`${styles.pageButton} ${currentPage === page
+                ? styles.activePage
+                : ""
+                }`}
               onClick={() => changePage(page)}
             >
               {page}

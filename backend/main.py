@@ -48,13 +48,13 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# 서버 연결 확인
-@app.get("/")
-def home():
-    print("클라이언트가 /를 요청하였습니다.")
-    return {
-        'message': "환영합니다."
-    }
+# # 서버 연결 확인
+# @app.get("/")
+# def home():
+#     print("클라이언트가 /를 요청하였습니다.")
+#     return {
+#         'message': "환영합니다."
+#     }
 
 # ==========================================
 # ===== 도감 (A) =====
