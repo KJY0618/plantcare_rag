@@ -119,7 +119,11 @@ function NewPlantForm() {
 
         <label>
           구매일
-          <input name="purchase_date" type="date" />
+          <input
+            name="purchase_date"
+            type="date"
+            max={todayStr()}
+          />
         </label>
 
         <label>
