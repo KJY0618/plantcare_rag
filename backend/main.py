@@ -48,24 +48,48 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# 서버 연결 확인
+@app.get("/")
+def home():
+    print("클라이언트가 /를 요청하였습니다.")
+    return {
+        'message': "환영합니다."
+    }
 
 # ==========================================
 # ===== 도감 (A) =====
 # ==========================================
 
+from fastapi import Query, HTTPException
+from service.species import (
+    get_species,
+    find_species,
+    paginate_species
+)
+
+
+# 도감 목록 조회 및 검색
+@app.get("/species")
+def read_species(
+    keyword: str | None = None,
+    light: str | None = None,
+):
+    return find_species(keyword, light)
+
+
+
 # 도감 식물 한 건 조회
 @app.get("/species/{species_id}")
-def get_species_detail(species_id: int):
+def read_species_detail(species_id: int):
+    species = get_species(species_id)
 
-    s = species_service.get_species(species_id)
-
-    if s is None:
+    if species is None:
         raise HTTPException(
-            404,
-            "도감에 없는 식물입니다."
+            status_code=404,
+            detail="해당 식물을 찾을 수 없습니다."
         )
 
-    return s
+    return species
 
 
 # ==========================================
