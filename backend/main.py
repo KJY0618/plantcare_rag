@@ -1,4 +1,3 @@
-
 # 역할 : 클라이언트(Next.js)의 요청을 받아서
 # service 폴더의 함수에게 일을 시키고 응답해 주는 파일
 # 이 파일에는 경로(주소)와 입력 검사만 두고,
@@ -17,7 +16,7 @@ from service import plants as plants_service
 from service import species as species_service
 from service import care_logs
 from service.photos import UPLOAD_DIR, delete_photo, save_photo
-
+from service.species import get_species, find_species
 
 # ===== FastAPI 생성 =====
 app = FastAPI(title="PlantCare API")
@@ -30,11 +29,7 @@ app = FastAPI(title="PlantCare API")
 
 UPLOAD_DIR.mkdir(exist_ok=True)
 
-app.mount(
-    "/uploads",
-    StaticFiles(directory=UPLOAD_DIR),
-    name="uploads"
-)
+app.mount("/uploads", StaticFiles(directory=UPLOAD_DIR), name="uploads")
 
 
 # ===== CORS 설정 =====
@@ -48,24 +43,52 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# # 서버 연결 확인
+# @app.get("/")
+# def home():
+#     print("클라이언트가 /를 요청하였습니다.")
+#     return {
+#         'message': "환영합니다."
+#     }
 
 # ==========================================
 # ===== 도감 (A) =====
 # ==========================================
 
+
+# 도감 목록 조회 및 검색
+@app.get("/species")
+def read_species(
+    keyword: str | None = None,
+    light: str | None = None,
+    page: int = Query(default=1, ge=1),
+    size: int = Query(default=10, ge=1),
+):
+    # 검색 및 광도 필터링
+    species_list = find_species(keyword, light)
+
+    # 필터링된 전체 데이터 개수
+    total = len(species_list)
+
+    # 페이지에 해당하는 데이터 범위 계산
+    start = (page - 1) * size
+    end = start + size
+
+    # 요청한 페이지의 데이터만 추출
+    items = species_list[start:end]
+
+    return {"items": items, "total": total}
+
+
 # 도감 식물 한 건 조회
 @app.get("/species/{species_id}")
-def get_species_detail(species_id: int):
+def read_species_detail(species_id: int):
+    species = get_species(species_id)
 
-    s = species_service.get_species(species_id)
+    if species is None:
+        raise HTTPException(status_code=404, detail="해당 식물을 찾을 수 없습니다.")
 
-    if s is None:
-        raise HTTPException(
-            404,
-            "도감에 없는 식물입니다."
-        )
-
-    return s
+    return species
 
 
 # ==========================================
@@ -84,21 +107,15 @@ def get_species_detail(species_id: int):
 # log_type : 케어 기록 종류
 # water, fertilizer, repot, issue 이외에는 422 응답
 
+
 @app.get("/plants")
 def list_plants(
     keyword: str | None = None,
     location: str | None = None,
-    log_type: str | None = Query(
-        None,
-        pattern="^(water|fertilizer|repot|issue)$"
-    ),
+    log_type: str | None = Query(None, pattern="^(water|fertilizer|repot|issue)$"),
 ):
 
-    return plants_service.list_plants(
-        keyword,
-        location,
-        log_type
-    )
+    return plants_service.list_plants(keyword, location, log_type)
 
 
 # ===== 2. 내 식물 추가 =====
@@ -114,13 +131,10 @@ def list_plants(
 
 # 조건에 맞지 않으면 FastAPI가 자동으로 422 응답
 
+
 @app.post("/plants", status_code=201)
 async def create_plant(
-    nickname: str = Form(
-        ...,
-        min_length=1,
-        max_length=50
-    ),
+    nickname: str = Form(..., min_length=1, max_length=50),
     water_interval_days: int = Form(..., ge=1),
     last_watered_at: date = Form(...),
     species_id: int | None = Form(None),
@@ -155,10 +169,7 @@ async def create_plant(
 
     # 마지막으로 물 준 날짜 검사
     if last_watered_at > date.today():
-        raise HTTPException(
-            422,
-            "마지막으로 물 준 날짜는 오늘 이전이어야 합니다."
-        )
+        raise HTTPException(422, "마지막으로 물 준 날짜는 오늘 이전이어야 합니다.")
 
     # 구매일 미래 날짜 검사
     if purchase_date and purchase_date > date.today():
@@ -192,7 +203,7 @@ async def create_plant(
         custom_species_name,
         location,
         purchase_date,
-        photo_path
+        photo_path,
     )
 
     return {"id": new_id}
@@ -206,14 +217,11 @@ async def create_plant(
 # 공백 한 칸(" ")을 보낸다.
 # (현재 서비스 구현 규칙에 맞춘 방식)
 
+
 @app.put("/plants/{plant_id}")
 async def update_plant(
     plant_id: int,
-    nickname: str | None = Form(
-        None,
-        min_length=1,
-        max_length=50
-    ),
+    nickname: str | None = Form(None, min_length=1, max_length=50),
     water_interval_days: int | None = Form(None, ge=1),
     location: str | None = Form(None),
     purchase_date: str | None = Form(None),
@@ -223,10 +231,7 @@ async def update_plant(
 
     # 없는 식물이면 사진 저장 전에 404
     if plants_service.get_plant(plant_id) is None:
-        raise HTTPException(
-            404,
-            "없는 식물입니다."
-        )
+        raise HTTPException(404, "없는 식물입니다.")
 
     # 새로운 사진 저장
     new_photo = await save_photo(photo)
@@ -240,7 +245,7 @@ async def update_plant(
             location,
             purchase_date,
             new_photo,
-            remove_photo
+            remove_photo,
         )
 
     except Exception:
@@ -254,14 +259,12 @@ async def update_plant(
 # 식물, 케어 기록, 사진 파일 함께 삭제
 # 없는 번호면 404
 
+
 @app.delete("/plants/{plant_id}")
 def delete_plant(plant_id: int):
 
     if not plants_service.delete_plant(plant_id):
-        raise HTTPException(
-            404,
-            "없는 식물입니다."
-        )
+        raise HTTPException(404, "없는 식물입니다.")
 
     return {"message": "삭제했습니다."}
 
@@ -274,6 +277,7 @@ def delete_plant(plant_id: int):
 # 오늘 물을 줘야 하는 식물 등의
 # 케어 목록을 가져온다.
 
+
 @app.get("/today")
 def today():
 
@@ -284,6 +288,7 @@ def today():
 # 클라이언트가 보내는 값 : 물 준 날짜
 # 날짜를 입력하지 않으면 서비스에서 오늘 날짜로 처리
 
+
 class WaterRequest(BaseModel):
     logged_at: date | None = None
 
@@ -292,11 +297,9 @@ class WaterRequest(BaseModel):
 # 특정 식물에 물을 준 기록을 저장한다.
 # 예) POST /plants/1/water
 
+
 @app.post("/plants/{plant_id}/water")
-def water(
-    plant_id: int,
-    body: WaterRequest | None = None
-):
+def water(plant_id: int, body: WaterRequest | None = None):
 
     # 물 준 날짜
     logged_at = None
@@ -306,32 +309,21 @@ def water(
 
     # 오늘보다 미래 날짜는 물 줄 수 없음
     if logged_at is not None and logged_at > date.today():
-        raise HTTPException(
-            422,
-            "물 준 날짜는 오늘 이전이어야 합니다."
-        )
+        raise HTTPException(422, "물 준 날짜는 오늘 이전이어야 합니다.")
 
     # service의 물주기 함수 호출
-    result = care_logs.water_plant(
-        plant_id,
-        logged_at
-    )
+    result = care_logs.water_plant(plant_id, logged_at)
 
     # 없는 식물인 경우
     if result is None:
-        raise HTTPException(
-            404,
-            "없는 식물입니다."
-        )
+        raise HTTPException(404, "없는 식물입니다.")
 
     # 아직 물 줄 날짜가 아닌 경우
     if result == "too_early":
-        raise HTTPException(
-            409,
-            "아직 물 줄 날이 아닙니다."
-        )
+        raise HTTPException(409, "아직 물 줄 날이 아닙니다.")
 
     return result
+
 
 # 내 식물 상세 (도감 정보 + 다음 물주기 + 최근 기록 5건)
 @app.get("/plants/{plant_id}")
@@ -340,6 +332,7 @@ def plant_detail(plant_id: int):
     if result is None:
         raise HTTPException(404, "없는 식물입니다.")
     return result
+
 
 # 비료 / 분갈이 / 이상 기록 저장 (물주기는 /water 를 사용)
 @app.post("/plants/{plant_id}/logs", status_code=201)
@@ -351,7 +344,9 @@ async def add_log(
     photo: UploadFile | None = File(None),
 ):
     if log_type not in ["fertilizer", "repot", "issue"]:
-        raise HTTPException(422, "기록 종류는 fertilizer, repot, issue 중 하나여야 합니다.")
+        raise HTTPException(
+            422, "기록 종류는 fertilizer, repot, issue 중 하나여야 합니다."
+        )
     if logged_at is not None and logged_at > date.today():
         raise HTTPException(422, "기록 날짜는 오늘 이전이어야 합니다.")
     if care_logs.find_plant(plant_id) is None:
@@ -374,7 +369,7 @@ async def add_log(
     if log_type == "issue" and memo is None and not has_photo:
         raise HTTPException(422, "이상 기록은 메모나 사진 중 하나는 있어야 합니다.")
 
-    photo_path = await save_photo(photo)    # 형식 오류 415, 용량 초과 413
+    photo_path = await save_photo(photo)  # 형식 오류 415, 용량 초과 413
     new_log = care_logs.add_log(plant_id, log_type, logged_at, memo, photo_path)
     return care_logs.to_log_item(new_log)
 
@@ -382,8 +377,15 @@ async def add_log(
 # 식물의 케어 기록 목록 (최근 기록이 먼저). ?log_type=issue 처럼 종류로 거를 수 있음
 @app.get("/plants/{plant_id}/logs")
 def plant_logs(plant_id: int, log_type: str | None = None):
-    if log_type is not None and log_type not in ["water", "fertilizer", "repot", "issue"]:
-        raise HTTPException(422, "기록 종류는 water, fertilizer, repot, issue 중 하나여야 합니다.")
+    if log_type is not None and log_type not in [
+        "water",
+        "fertilizer",
+        "repot",
+        "issue",
+    ]:
+        raise HTTPException(
+            422, "기록 종류는 water, fertilizer, repot, issue 중 하나여야 합니다."
+        )
     if care_logs.find_plant(plant_id) is None:
         raise HTTPException(404, "없는 식물입니다.")
     return care_logs.get_log_list(plant_id, log_type)

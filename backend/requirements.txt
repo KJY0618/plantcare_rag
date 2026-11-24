@@ -5,4 +5,3 @@ pydantic>=2.6.4
 requests
 python-multipart
 python-dotenv
-requests

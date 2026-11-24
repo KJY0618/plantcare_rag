@@ -1,0 +1,175 @@
+
+/* =====================================
+   1. 전체 페이지
+===================================== */
+
+.page {
+    max-width: 640px;
+    margin: 0 auto;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.state {
+    text-align: center;
+    padding: 40px 0;
+    color: #666;
+}
+
+/* =====================================
+   2. 식물 기본 정보
+===================================== */
+
+.head {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 8px;
+    padding-bottom: 10px;
+}
+
+.photo {
+    width: 100%;
+    height: 280px;
+    object-fit: cover;
+    border-radius: 12px;
+}
+
+.noPhoto {
+    width: 100%;
+    height: 280px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f1f4ef;
+    border-radius: 12px;
+    font-size: 60px;
+}
+
+.nickname {
+    margin: 8px 0 0;
+    font-size: 24px;
+    font-weight: 700;
+}
+
+.sub {
+    margin: 0;
+    color: #777;
+    font-size: 14px;
+}
+
+/* =====================================
+   3. 정보 카드
+===================================== */
+
+.card {
+    background: #fff;
+    border: 1px solid #e5e5e5;
+    border-radius: 12px;
+    padding: 18px;
+}
+
+.card h2 {
+    margin: 0 0 16px;
+    font-size: 18px;
+    font-weight: 700;
+}
+
+/* =====================================
+   4. 정보 목록
+===================================== */
+
+.info {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.infoItem {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.infoLabel {
+    color: #777;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.infoValue {
+    color: #333;
+    font-size: 14px;
+    line-height: 1.6;
+    white-space: pre-wrap;
+    word-break: keep-all;
+}
+
+/* =====================================
+   5. 태그 목록
+===================================== */
+
+.tagList {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.tag {
+    padding: 6px 10px;
+    background: #f1f5ef;
+    border-radius: 20px;
+    color: #4b684b;
+    font-size: 13px;
+    line-height: 1.4;
+}
+
+/* =====================================
+   6. 식물 특징
+===================================== */
+
+.description {
+    margin: 0;
+    color: #444;
+    font-size: 14px;
+    line-height: 1.8;
+    white-space: pre-wrap;
+    word-break: keep-all;
+}
+
+/* =====================================
+   7. 하단 버튼
+===================================== */
+
+.bottom {
+    display: flex;
+    gap: 10px;
+    margin-top: 4px;
+}
+
+.button {
+    min-height: 44px;
+    padding: 0 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    border-radius: 8px;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.primary {
+    flex: 1;
+    background: #527b50;
+    color: #fff;
+}
+
+.primary:hover {
+    background: #426541;
+}
