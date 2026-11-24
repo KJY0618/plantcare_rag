@@ -334,17 +334,28 @@ export default function SpeciesDetailPage() {
 
             </section>
 
+
             {/* 하단 버튼 */}
             <div className={styles.bottom}>
 
+                {/* 도감 목록으로 돌아가기 */}
                 <Link
                     href="/species"
+                    className={styles.button}
+                >
+                    ← 도감 목록으로
+                </Link>
+
+                {/* 선택한 도감 식물을 내 식물로 등록 */}
+                <Link
+                    href={`/plants/new?species_id=${species.id}`}
                     className={`${styles.button} ${styles.primary}`}
                 >
-                    도감 목록으로
+                    🌱 내 식물로 등록하기
                 </Link>
 
             </div>
+
 
         </main>
     );
