@@ -3,7 +3,7 @@
 // 내 식물 상세 : /plants/1 처럼 식물 번호로 들어오는 화면
 //   식물 정보, 다음 물주기, 물주기·비료·분갈이 버튼, 이상 기록 쓰기, 최근 기록, 수정·삭제
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 
@@ -68,6 +68,8 @@ export default function PlantDetailPage() {
     const params = useParams();
     const router = useRouter();
     const plantId = params.id;            // 주소의 식물 번호
+    // 도감 정보 모달창을 열고 닫기 위한 참조
+    const speciesDialogRef = useRef(null);
 
     const [plant, setPlant] = useState(null);      // 서버에서 받은 식물 상세
     const [loading, setLoading] = useState(true);  // 처음 불러오는 중
@@ -273,6 +275,61 @@ export default function PlantDetailPage() {
     // 물주기 버튼 : 아직 물 줄 날이 아니면(D-day 가 1 이상) 잠금
     const waterLocked = plant.d_day !== null && plant.d_day > 0;
 
+
+    // 도감 상세 모달에서 사용할 정보
+    // 기존 plant.species 데이터를 항목별로 정리
+    const speciesSections = species ? [
+        {
+            title: "기본 정보",
+            items: [
+                ["학명", species.scientific_name],
+                ["영문명", species.english_name],
+                ["유통명", species.distribution_name],
+                ["원산지", species.origin],
+                ["과명", species.family_name],
+                ["생장 높이", species.growth_height ? `${species.growth_height} cm` : null],
+                ["생장 너비", species.growth_width ? `${species.growth_width} cm` : null],
+            ],
+        },
+        {
+            title: "생육 환경",
+            items: [
+                ["광도", showTags(species.tags?.light)],
+                ["배치 장소", showTags(species.tags?.placement)],
+                ["생육 온도", species.growth_temp],
+                ["최저 월동 온도", species.winter_min_temp],
+                ["습도", species.humidity],
+            ],
+        },
+        {
+            title: "계절별 물주기",
+            items: [
+                ["봄", species.water_spring],
+                ["여름", species.water_summer],
+                ["가을", species.water_autumn],
+                ["겨울", species.water_winter],
+            ],
+        },
+        {
+            title: "관리 정보",
+            items: [
+                ["관리 난이도", species.manage_level],
+                ["관리 요구도", species.manage_demand],
+                ["비료", species.fertilizer_info],
+                ["토양", species.soil_info],
+                ["번식 시기", species.propagation_period],
+                ["잎 형태", species.leaf_form],
+            ],
+        },
+        {
+            title: "식물 특징",
+            items: [
+                ["특징", species.function_info],
+            ],
+        },
+    ] : [];
+
+
     return (
         <main className={styles.page}>
             {/* 위쪽 : 사진과 이름 */}
@@ -337,29 +394,118 @@ export default function PlantDetailPage() {
                 {message && <p className={styles.message}>{message}</p>}
             </section>
 
+
             {/* 도감 정보 */}
             <section className={styles.card}>
-                <h2>도감 정보</h2>
                 {species ? (
-                    <ul className={styles.info}>
-                        <li>봄 물주기 : {showValue(species.water_spring)}</li>
-                        <li>여름 물주기 : {showValue(species.water_summer)}</li>
-                        <li>가을 물주기 : {showValue(species.water_autumn)}</li>
-                        <li>겨울 물주기 : {showValue(species.water_winter)}</li>
-                        <li>빛 : {showTags(species.tags && species.tags.light)}</li>
-                        <li>놓을 곳 : {showTags(species.tags && species.tags.placement)}</li>
-                        <li>비료 : {showValue(species.fertilizer_info)}</li>
-                        <li>토양 : {showValue(species.soil_info)}</li>
-                        <li>습도 : {showValue(species.humidity)}</li>
-                        <li>겨울 최저 온도 : {showValue(species.winter_min_temp)}</li>
-                        <li>관리 난이도 : {showValue(species.manage_level)}</li>
-                    </ul>
+                    <button
+                        type="button"
+                        className={styles.speciesOpenButton}
+                        onClick={() => speciesDialogRef.current?.showModal()}
+                    >
+                        <span>📖 도감 정보</span>
+                        <span>상세 보기 →</span>
+                    </button>
                 ) : (
-                    <p className={styles.sub}>
-                        직접 입력한 식물이라 도감 정보가 없어요. 물주기는 {plant.water_interval_days}일마다로 계산해요.
-                    </p>
+                    <>
+                        <h2>도감 정보</h2>
+                        <p className={styles.sub}>
+                            직접 입력한 식물이라 도감 정보가 없어요.
+                            물주기는 {plant.water_interval_days}일마다로 계산해요.
+                        </p>
+                    </>
                 )}
             </section>
+
+            {/* 도감 상세 모달창 */}
+            {species && (
+                <dialog
+                    ref={speciesDialogRef}
+                    className={styles.speciesDialog}
+                    aria-labelledby="species-dialog-title"
+                >
+                    {/* 모달 상단 */}
+                    <div className={styles.speciesDialogHeader}>
+                        <h2 id="species-dialog-title">
+                            🌿 {species.name} 도감 상세
+                        </h2>
+
+                        <button
+                            type="button"
+                            onClick={() => speciesDialogRef.current?.close()}
+                        >
+                            ✕
+                        </button>
+                    </div>
+
+                    {/* 도감 사진 */}
+                    {(species.image_url || species.thumb_url) && (
+                        <img
+                            src={species.image_url || species.thumb_url}
+                            alt={species.name}
+                            className={styles.speciesDialogImage}
+                        />
+                    )}
+
+                    {/* 모달 내부 정보 */}
+                    <div className={styles.speciesDialogBody}>
+
+                        <h3>기본 정보</h3>
+                        <ul className={styles.info}>
+                            <li>학명 : {showValue(species.scientific_name)}</li>
+                            <li>영문명 : {showValue(species.english_name)}</li>
+                            <li>유통명 : {showValue(species.distribution_name)}</li>
+                            <li>원산지 : {showValue(species.origin)}</li>
+                            <li>과명 : {showValue(species.family_name)}</li>
+                            <li>생장 높이 : {showValue(species.growth_height)}</li>
+                            <li>생장 너비 : {showValue(species.growth_width)}</li>
+                        </ul>
+
+                        <h3>생육 환경</h3>
+                        <ul className={styles.info}>
+                            <li>광도 : {showTags(species.tags?.light)}</li>
+                            <li>배치 장소 : {showTags(species.tags?.placement)}</li>
+                            <li>생육 온도 : {showValue(species.growth_temp)}</li>
+                            <li>최저 월동 온도 : {showValue(species.winter_min_temp)}</li>
+                            <li>습도 : {showValue(species.humidity)}</li>
+                        </ul>
+
+                        <h3>계절별 물주기</h3>
+                        <ul className={styles.info}>
+                            <li>봄 : {showValue(species.water_spring)}</li>
+                            <li>여름 : {showValue(species.water_summer)}</li>
+                            <li>가을 : {showValue(species.water_autumn)}</li>
+                            <li>겨울 : {showValue(species.water_winter)}</li>
+                        </ul>
+
+                        <h3>관리 정보</h3>
+                        <ul className={styles.info}>
+                            <li>관리 난이도 : {showValue(species.manage_level)}</li>
+                            <li>관리 요구도 : {showValue(species.manage_demand)}</li>
+                            <li>비료 : {showValue(species.fertilizer_info)}</li>
+                            <li>토양 : {showValue(species.soil_info)}</li>
+                            <li>번식 시기 : {showValue(species.propagation_period)}</li>
+                            <li>잎 형태 : {showValue(species.leaf_form)}</li>
+                        </ul>
+
+                        <h3>식물 특징</h3>
+                        <p>
+                            {showValue(species.function_info)}
+                        </p>
+
+                    </div>
+
+                    {/* 모달 닫기 */}
+                    <button
+                        type="button"
+                        className={styles.speciesModalBottomButton}
+                        onClick={() => speciesDialogRef.current?.close()}
+                    >
+                        닫기
+                    </button>
+                </dialog>
+            )}
+
 
             {/* 이상 기록 쓰기 */}
             <section className={styles.card}>

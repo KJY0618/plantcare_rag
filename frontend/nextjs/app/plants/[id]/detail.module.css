@@ -166,3 +166,248 @@
     line-height: 1.6;
     color: #555;
 }
+
+
+
+/* =====================================
+   도감 정보 상세 보기 버튼
+===================================== */
+
+.speciesOpenButton {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 4px;
+
+    border: none;
+    background: transparent;
+
+    /* 기본 글씨는 진한 차콜 */
+    color: #29322D;
+    font-size: 17px;
+    font-weight: 600;
+    cursor: pointer;
+    text-align: left;
+}
+
+/* 상세 보기 텍스트만 포인트 초록색 */
+.speciesOpenButton span:last-child {
+    color: #438557;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.speciesOpenButton:hover span:last-child {
+    color: #2F6943;
+    text-decoration: underline;
+}
+
+.speciesOpenButton:focus-visible {
+    outline: 2px solid #438557;
+    outline-offset: 4px;
+    border-radius: 6px;
+}
+
+
+/* =====================================
+   도감 상세 모달창
+===================================== */
+
+.speciesDialog {
+    width: min(700px, calc(100% - 32px));
+    max-height: 85vh;
+    max-height: 85dvh;
+
+    padding: 28px;
+    margin: auto;
+
+    border: 1px solid #E5EAE5;
+    border-radius: 20px;
+
+    /* 밝은 배경 + 진한 기본 글씨 */
+    background-color: #FFFFFF;
+    color: #303833;
+
+    overflow-y: auto;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.18);
+}
+
+/* 모달 바깥쪽 어두운 배경 */
+.speciesDialog::backdrop {
+    background: rgba(24, 30, 26, 0.55);
+}
+
+
+/* =====================================
+   모달 상단 제목
+===================================== */
+
+.speciesDialogHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 12px;
+
+    margin-bottom: 22px;
+    padding-bottom: 18px;
+
+    border-bottom: 1px solid #E9EDE9;
+}
+
+/* 식물 이름 */
+.speciesDialogHeader h2 {
+    margin: 0;
+    color: #242B27;
+    font-size: 24px;
+    font-weight: 700;
+}
+
+/* 상단 설명 */
+.speciesDialogHeader p {
+    margin-top: 6px;
+    color: #848C86;
+    font-size: 13px;
+}
+
+/* X 닫기 버튼 */
+.speciesDialogHeader button {
+    width: 36px;
+    height: 36px;
+
+    border: none;
+    border-radius: 50%;
+
+    background: #F3F5F3;
+    color: #606963;
+
+    font-size: 19px;
+    cursor: pointer;
+}
+
+.speciesDialogHeader button:hover {
+    background: #E8ECE8;
+    color: #242B27;
+}
+
+
+/* =====================================
+   도감 식물 이미지
+===================================== */
+
+.speciesDialogImage {
+    display: block;
+    width: 100%;
+    max-height: 250px;
+
+    object-fit: contain;
+    border-radius: 12px;
+
+    background: #F7F9F7;
+    margin-bottom: 24px;
+}
+
+
+/* =====================================
+   도감 상세 정보 내용
+===================================== */
+
+/* 기본 정보, 생육 환경 등의 제목 */
+.speciesDialogBody h3 {
+    margin: 28px 0 14px;
+    padding-bottom: 10px;
+
+    color: #303833;
+    font-size: 17px;
+    font-weight: 700;
+
+    border-bottom: 1px solid #E5EAE5;
+}
+
+/* 각 정보 목록 */
+.speciesDialogBody ul {
+    margin: 0;
+    padding-left: 20px;
+    list-style: disc;
+}
+
+/* 항목 텍스트는 초록이 아닌 진한 회색 */
+.speciesDialogBody li {
+    padding: 5px 0;
+    color: #4B5550;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 1.8;
+}
+
+/* 목록 점만 은은한 초록 */
+.speciesDialogBody li::marker {
+    color: #8AAC92;
+}
+
+/* 식물 특징 등 긴 설명 */
+.speciesDialogBody p {
+    color: #505A54;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 1.9;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+}
+
+
+/* =====================================
+   모달 하단 닫기 버튼
+===================================== */
+
+.speciesModalBottomButton {
+    display: block;
+    width: 100%;
+    margin-top: 30px;
+    padding: 14px;
+
+    border: none;
+    border-radius: 10px;
+
+    /* 초록색은 주요 버튼에만 사용 */
+    background: #3F8056;
+    color: #FFFFFF;
+
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.speciesModalBottomButton:hover {
+    background: #326B45;
+}
+
+
+/* =====================================
+   모바일 반응형
+===================================== */
+
+@media (max-width: 600px) {
+    .speciesDialog {
+        padding: 20px;
+        border-radius: 16px;
+    }
+
+    .speciesDialogHeader h2 {
+        font-size: 21px;
+    }
+
+    .speciesDialogBody h3 {
+        font-size: 16px;
+    }
+
+    .speciesDialogBody li {
+        font-size: 13px;
+    }
+
+    .speciesOpenButton {
+        font-size: 16px;
+    }
+}
