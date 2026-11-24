@@ -123,14 +123,30 @@ def update_plant(plant_id, nickname=None, water_interval_days=None, location=Non
         nickname = nickname.strip()
         if not nickname:
             raise HTTPException(422, "별명을 입력해 주세요.")
-    change_date = purchase_date is not None     # 구매일을 바꾸라는 요청인지 (빈 칸이면 지우기)
+    # 구매일 수정 요청이 들어왔는지 확인
+    change_date = purchase_date is not None
     new_date = None
+
     if change_date and purchase_date.strip():
         try:
-            new_date = date.fromisoformat(purchase_date.strip()).isoformat()
-        except ValueError:
-            raise HTTPException(422, "구매일은 YYYY-MM-DD 형식이어야 합니다.")
+            # 입력한 문자열을 날짜 객체로 변환
+            parsed_date = date.fromisoformat(purchase_date.strip())
 
+            # 구매일이 오늘보다 미래인지 검사
+            if parsed_date > date.today():
+                raise HTTPException(
+                    422,
+                    "구매일은 오늘 이후일 수 없습니다."
+                )
+
+            # 문제가 없는 날짜만 저장할 형식으로 변환
+            new_date = parsed_date.isoformat()
+
+        except ValueError:
+            raise HTTPException(
+                422,
+                "구매일은 YYYY-MM-DD 형식이어야 합니다."
+            )
     # 검사를 통과했으면 보낸 항목만 바꾼다.
     if nickname is not None:
         plant["nickname"] = nickname
