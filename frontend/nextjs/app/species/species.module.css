@@ -1,0 +1,254 @@
+
+/* 식물 도감 전체 */
+.container {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 50px 30px;
+    color: #345c45;
+}
+
+
+/* 상단 제목 */
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 30px;
+    margin-bottom: 40px;
+}
+
+.subtitle {
+    color: #86a789;
+    font-size: 13px;
+    letter-spacing: 2px;
+    font-weight: bold;
+}
+
+.header h1 {
+    font-size: 34px;
+    margin: 12px 0;
+}
+
+.description {
+    font-size: 15px;
+    color: #777;
+}
+
+
+/* 검색 영역 전체 */
+.searchArea {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    width: 100%;
+    max-width: 420px;
+    flex-shrink: 0;
+}
+
+/* 식물 이름 검색창 */
+.searchInput {
+    display: flex;
+    width: 100%;
+    gap: 8px;
+}
+
+/* 검색어 입력창 */
+.searchInput input {
+    flex: 1;
+    min-width: 0;
+    padding: 12px 14px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 14px;
+}
+
+/* 검색 버튼 */
+.searchInput button {
+    padding: 12px 20px;
+    border: none;
+    border-radius: 8px;
+    background-color: #3d7652;
+    color: white;
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+/* 광요구도 선택 필터 */
+.filterArea select {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: white;
+    font-size: 14px;
+}
+
+
+/* 식물 개수 */
+.summary {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #e2e8de;
+    font-size: 14px;
+}
+
+.summary strong {
+    font-size: 20px;
+    color: #345c45;
+}
+
+
+/* 새로고침 버튼 */
+.refreshButton {
+    border: 1px solid #d4e3d4;
+    background: white;
+    color: #345c45;
+    border-radius: 8px;
+    padding: 8px 14px;
+    cursor: pointer;
+}
+
+.refreshButton:hover {
+    background: #f4f8f2;
+}
+
+.refreshButton:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+
+/* 식물 카드 배치 */
+.grid {
+    display: grid;
+    grid-template-columns: repeat(
+        auto-fill,
+        minmax(230px, 1fr)
+    );
+    gap: 24px;
+}
+
+
+/* 로딩, 오류, 빈 결과 */
+.message {
+    text-align: center;
+    padding: 75px 20px;
+    border: 1px dashed #d4e3d4;
+    background: #f8faf6;
+    border-radius: 18px;
+    color: #555;
+}
+
+.message h2 {
+    color: #345c45;
+    margin: 15px 0;
+}
+
+.emptyIcon {
+    font-size: 55px;
+    margin-bottom: 15px;
+}
+
+
+/* 다시 시도 버튼 */
+.retryButton {
+    display: inline-block;
+    margin-top: 20px;
+    padding: 12px 24px;
+    border: none;
+    border-radius: 10px;
+    background: #345c45;
+    color: white;
+    cursor: pointer;
+}
+
+.retryButton:hover {
+    background: #254432;
+}
+
+
+/* 페이지네이션 */
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    margin-top: 45px;
+}
+
+.pageButton {
+    min-width: 38px;
+    height: 38px;
+    padding: 0 12px;
+    border: 1px solid #d4e3d4;
+    border-radius: 8px;
+    background: white;
+    color: #345c45;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.pageButton:hover:not(:disabled) {
+    background: #f0f5ee;
+}
+
+.pageButton:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+.activePage {
+    background: #345c45;
+    color: white;
+    border-color: #345c45;
+}
+
+.activePage:hover {
+    background: #254432;
+}
+
+
+/* 모바일 반응형 */
+@media (max-width: 600px) {
+
+    .container {
+        padding: 30px 16px;
+    }
+
+    .header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .header h1 {
+        font-size: 28px;
+    }
+
+    .searchArea {
+        max-width: 100%;
+    }
+
+    .grid {
+        grid-template-columns: repeat(
+            2,
+            minmax(0, 1fr)
+        );
+        gap: 12px;
+    }
+
+    .pagination {
+        gap: 5px;
+        margin-top: 30px;
+    }
+
+    .pageButton {
+        min-width: 32px;
+        height: 34px;
+        padding: 0 8px;
+        font-size: 12px;
+    }
+}
