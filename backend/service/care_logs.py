@@ -61,6 +61,58 @@ def add_water_log(plant_id, logged_at=None):
     return add_log(plant_id, "water", logged_at)
 
 
+# 같은 식물, 같은 종류, 같은 날짜의 기록이 이미 있는지 확인 (비료·분갈이 중복 방지에 사용)
+def has_log_on_date(plant_id, log_type, day):
+    care_logs = json_store.load("care_logs")
+    for log in care_logs:
+        if log["plant_id"] != plant_id:
+            continue
+        if log["log_type"] != log_type:
+            continue
+        if log["logged_at"] == day.isoformat():
+            return True
+    return False
+
+
+# 식물을 삭제할 때 그 식물의 케어 기록도 모두 지움 (식물 삭제(B)가 이 함수를 불러서 사용)
+def delete_logs_of_plant(plant_id):
+    care_logs = json_store.load("care_logs")   # 1. 전체 읽기
+    remain = []
+    for log in care_logs:                      # 2. 이 식물이 아닌 기록만 남김
+        if log["plant_id"] != plant_id:
+            remain.append(log)
+    json_store.save("care_logs", remain)       # 3. 전체 저장
+
+
+# 기록 1건 삭제 (잘못 누른 기록을 되돌릴 때 사용)
+#   없는 기록이면 None, 식물의 마지막 물주기 기록이면 지우지 않고 "last_water" 를 돌려줌
+#   (물주기 기록이 하나도 없으면 다음 물주기를 계산할 수 없기 때문)
+def delete_log(plant_id, log_id):
+    care_logs = json_store.load("care_logs")
+
+    target = None                              # 1. 지울 기록 찾기
+    for log in care_logs:
+        if log["id"] == log_id and log["plant_id"] == plant_id:
+            target = log
+    if target is None:
+        return None
+
+    if target["log_type"] == "water":          # 2. 물주기 기록이 이것 하나뿐이면 지우지 않음
+        water_count = 0
+        for log in care_logs:
+            if log["plant_id"] == plant_id and log["log_type"] == "water":
+                water_count = water_count + 1
+        if water_count <= 1:
+            return "last_water"
+
+    remain = []                                # 3. 이 기록만 빼고 저장
+    for log in care_logs:
+        if log["id"] != log_id:
+            remain.append(log)
+    json_store.save("care_logs", remain)
+    return target
+
+
 # ---------------------------------------------------------------
 # 3. 기록 조회
 # ---------------------------------------------------------------
@@ -105,6 +157,14 @@ def get_log_list(plant_id, log_type=None):
     for log in logs:
         result.append(to_log_item(log))
     return result
+
+
+# 종류별 마지막 기록 날짜 ("2026-11-10" 글자, 기록이 없으면 None)
+def get_last_log_date(plant_id, log_type):
+    logs = get_logs(plant_id, log_type)        # 최근 기록이 먼저 옴
+    if len(logs) == 0:
+        return None
+    return logs[0]["logged_at"]
 
 
 # ---------------------------------------------------------------
@@ -171,6 +231,22 @@ def water_plant(plant_id, logged_at=None):
     }
 
 
+# 최근 이상 기록 : 가장 최근 이상 기록이 days 일 이내면 알려줌 (없거나 오래됐으면 None)
+def get_recent_issue(plant_id, days=7):
+    issues = get_logs(plant_id, "issue")      # 최근 기록이 먼저 옴
+    if len(issues) == 0:
+        return None
+    latest = issues[0]
+    days_ago = (date.today() - date.fromisoformat(latest["logged_at"])).days
+    if days_ago > days:
+        return None
+    return {
+        "logged_at": latest["logged_at"],
+        "days_ago": days_ago,
+        "memo": latest["memo"],
+    }
+
+
 # 정렬 기준으로 쓰는 함수 : D-day 값을 꺼냄
 def get_d_day(item):
     return item["d_day"]
@@ -211,6 +287,7 @@ def get_today_list():
             "next_water_date": next_date.isoformat(),
             "d_day": d_day,
             "season_water_text": season_water_text,
+            "recent_issue": get_recent_issue(plant["id"]),   # 최근 이상 기록 (없으면 None)
         })
 
     result.sort(key=get_d_day)   # D-day 가 작은 순
@@ -257,14 +334,7 @@ def get_plant_detail(plant_id):
         "last_watered_at": last_watered_at,
         "next_water_date": next_water_date,
         "d_day": d_day,
+        "last_fertilized_at": get_last_log_date(plant_id, "fertilizer"),   # 마지막 비료 준 날
+        "last_repotted_at": get_last_log_date(plant_id, "repot"),          # 마지막 분갈이 한 날
         "recent_logs": recent_logs,
     }
-
-# 식물을 삭제할 때 그 식물의 케어 기록도 모두 지움 (식물 삭제가 이 함수를 불러서 사용)
-def delete_logs_of_plant(plant_id):
-    care_logs = json_store.load("care_logs")   # 1. 전체 읽기
-    remain = []
-    for log in care_logs:                      # 2. 이 식물이 아닌 기록만 남김
-        if log["plant_id"] != plant_id:
-            remain.append(log)
-    json_store.save("care_logs", remain)       # 3. 전체 저장

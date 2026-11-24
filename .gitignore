@@ -4,9 +4,9 @@ venv/
 .venv/
 node_modules/
 .next/
-__pycache__/
-*.pyc
-backend/uploads/*
+pycache/
+.pyc
+backend/uploads/
 backend/chroma_db/*
 !backend/uploads/.gitkeep
 !backend/chroma_db/.gitkeep

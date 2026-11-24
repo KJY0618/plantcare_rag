@@ -56,3 +56,9 @@
     color: #d9534f;
     margin: 0;
 }
+
+/* 삭제 결과 안내 */
+.notice {
+    margin: 0;
+    color: #2f6f46;
+}

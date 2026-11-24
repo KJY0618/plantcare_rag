@@ -146,18 +146,47 @@ async def create_plant(
 
     # 1. 입력 검사
 
-    # 식물 종류는 도감에서 선택하거나
-    # 직접 입력해야 한다.
-    if species_id is None and not custom_species_name:
-        raise HTTPException(422, "도감에서 식물을 고르거나 종류를 직접 입력해 주세요.")
+    # 별명 공백 검사
+    nickname = nickname.strip()
 
-    # 마지막으로 물 준 날짜는 미래일 수 없다.
+    if not nickname:
+        raise HTTPException(
+            422,
+            "별명을 입력해 주세요."
+        )
+
+    # 직접 입력한 식물 종류의 공백 제거
+    custom_species_name = (
+        custom_species_name or ""
+    ).strip() or None
+
+    # 도감 선택 또는 직접 입력 필수
+    if species_id is None and custom_species_name is None:
+        raise HTTPException(
+            422,
+            "도감에서 식물을 고르거나 종류를 직접 입력해 주세요."
+        )
+
+    # 마지막으로 물 준 날짜 검사
     if last_watered_at > date.today():
         raise HTTPException(422, "마지막으로 물 준 날짜는 오늘 이전이어야 합니다.")
 
-    # 도감 번호가 존재하는지 검사
-    if species_id is not None and species_service.get_species(species_id) is None:
-        raise HTTPException(404, "도감에 없는 식물입니다.")
+    # 구매일 미래 날짜 검사
+    if purchase_date and purchase_date > date.today():
+        raise HTTPException(
+            422,
+            "구매일은 오늘 이후일 수 없습니다."
+        )
+
+    # 도감 번호 존재 여부 검사
+    if (
+        species_id is not None
+        and species_service.get_species(species_id) is None
+    ):
+        raise HTTPException(
+            404,
+            "도감에 없는 식물입니다."
+        )
 
     # 2. 사진 저장
     # 사진이 없으면 None
@@ -322,6 +351,14 @@ async def add_log(
         raise HTTPException(422, "기록 날짜는 오늘 이전이어야 합니다.")
     if care_logs.find_plant(plant_id) is None:
         raise HTTPException(404, "없는 식물입니다.")
+    
+    # 비료·분갈이는 같은 날짜에 한 번만 기록할 수 있음 (사진을 저장하기 전에 먼저 확인)
+    if log_type in ["fertilizer", "repot"]:
+        check_day = logged_at
+        if check_day is None:
+            check_day = date.today()
+        if care_logs.has_log_on_date(plant_id, log_type, check_day):
+            raise HTTPException(409, "같은 날짜에 이미 기록했습니다.")
 
     memo = (memo or "").strip()
     if memo == "":
@@ -353,6 +390,17 @@ def plant_logs(plant_id: int, log_type: str | None = None):
         raise HTTPException(404, "없는 식물입니다.")
     return care_logs.get_log_list(plant_id, log_type)
 
+# 기록 1건 삭제 (잘못 누른 기록 되돌리기)
+@app.delete("/plants/{plant_id}/logs/{log_id}")
+def delete_plant_log(plant_id: int, log_id: int):
+    if care_logs.find_plant(plant_id) is None:
+        raise HTTPException(404, "없는 식물입니다.")
+    result = care_logs.delete_log(plant_id, log_id)
+    if result is None:
+        raise HTTPException(404, "없는 기록입니다.")
+    if result == "last_water":
+        raise HTTPException(409, "마지막 물주기 기록은 지울 수 없습니다. 다음 물주기 계산에 필요합니다.")
+    return {"deleted_id": log_id}
 
 # ===== 식물 도우미 (A, 2단계) =====
 # ==========================================

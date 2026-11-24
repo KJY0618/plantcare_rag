@@ -7,8 +7,8 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 
-import LogList from "@/components/care/LogList";
-import { getLogs } from "@/service/careApi";
+import LogList, { TYPE_LABEL } from "@/components/care/LogList";
+import { deleteLog, getLogs } from "@/service/careApi";
 import styles from "./diary.module.css";
 
 // 거르기 버튼 목록 : value 가 "" 이면 전체
@@ -28,6 +28,9 @@ export default function DiaryPage() {
     const [logs, setLogs] = useState([]);          // 서버에서 받은 기록 목록
     const [loading, setLoading] = useState(true);  // 불러오는 중
     const [error, setError] = useState("");        // 불러오기 실패 이유
+    const [notice, setNotice] = useState("");      // 삭제 결과 안내
+    const [deleting, setDeleting] = useState(false);   // 삭제 처리 중이면 버튼 잠금
+    const [version, setVersion] = useState(0);     // 삭제 후 목록을 다시 불러올 때 1씩 올림
 
     // 처음 열릴 때, 그리고 종류를 바꿀 때마다 기록을 다시 불러옴
     useEffect(() => {
@@ -56,7 +59,31 @@ export default function DiaryPage() {
         return () => {
             canceled = true;
         };
-    }, [plantId, logType]);
+    }, [plantId, logType, version]);
+
+    // 기록 1건 삭제 (잘못 누른 기록 되돌리기)
+    async function handleDelete(log) {
+        if (deleting) {
+            return;
+        }
+        let question = log.logged_at + " " + TYPE_LABEL[log.log_type] + " 기록을 삭제할까요?";
+        if (log.log_type === "water") {
+            question = question + "\n물주기 기록을 지우면 다음 물주기 날짜가 바뀌어요.";
+        }
+        if (!window.confirm(question)) {
+            return;
+        }
+        setDeleting(true);
+        setNotice("");
+        try {
+            await deleteLog(plantId, log.id);
+            setNotice("기록을 삭제했어요.");
+            setVersion(version + 1);          // 목록을 다시 불러옴
+        } catch (e) {
+            setNotice(e.message);
+        }
+        setDeleting(false);
+    }
 
     return (
         <main className={styles.page}>
@@ -81,7 +108,10 @@ export default function DiaryPage() {
             {/* 목록 */}
             {loading && <p className={styles.state}>불러오는 중...</p>}
             {!loading && error && <p className={styles.error}>{error}</p>}
-            {!loading && !error && <LogList logs={logs} />}
+            {notice && <p className={styles.notice}>{notice}</p>}
+            {!loading && !error && (
+                <LogList logs={logs} onDelete={handleDelete} disabled={deleting} />
+            )}
         </main>
     );
 }

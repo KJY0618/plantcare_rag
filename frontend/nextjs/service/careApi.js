@@ -82,7 +82,7 @@ export async function waterPlant(plantId) {
 // 내 식물 상세 / 기록
 // ---------------------------------------------------------------
 
-// 내 식물 상세 (도감 정보 + 다음 물주기 + 최근 기록 5건)
+// 내 식물 상세 (도감 정보 + 다음 물주기 + 마지막 비료·분갈이 날짜 + 최근 기록 5건)
 export async function getPlantDetail(plantId) {
     return request("/plants/" + plantId);
 }
@@ -99,10 +99,19 @@ export async function getLogs(plantId, logType) {
 // 비료 / 분갈이 / 이상 기록 저장 (사진이 있을 수 있어서 FormData 로 보냄)
 //   formData 에는 log_type, memo, photo 등을 담아서 넘김
 //   FormData 를 보낼 때는 Content-Type 을 직접 적지 않음 (브라우저가 알아서 정함)
+//   같은 날짜에 비료·분갈이를 또 저장하면 서버가 409 로 막고, 그 이유가 에러로 던져짐
 export async function addLog(plantId, formData) {
     return request("/plants/" + plantId + "/logs", {
         method: "POST",
         body: formData,
+    });
+}
+
+// 기록 1건 삭제 (잘못 누른 기록 되돌리기)
+//   식물의 마지막 물주기 기록은 서버가 409 로 막음
+export async function deleteLog(plantId, logId) {
+    return request("/plants/" + plantId + "/logs/" + logId, {
+        method: "DELETE",
     });
 }
 
