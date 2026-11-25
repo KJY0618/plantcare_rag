@@ -1,11 +1,14 @@
-/* 내 식물 상세 화면 */
+/* 내 식물 상세 화면 (웹 전용) : 홈 화면과 같은 색과 경계를 사용 */
+
 .page {
-    max-width: 640px;
+    max-width: 1100px;
     margin: 0 auto;
-    padding: 16px;
+    padding: 20px 16px 48px;
     display: flex;
     flex-direction: column;
-    gap: 14px;
+    gap: 16px;
+    color: #1c2b21;
+    word-break: keep-all;             /* 한글이 단어 중간에서 줄바꿈되지 않게 함 */
 }
 
 .state {
@@ -16,398 +19,796 @@
     color: #555;
 }
 
-.head {
-    text-align: center;
-}
+/* ---------------- 맨 위 줄 ---------------- */
 
-.photo {
-    width: 100%;
-    max-height: 320px;
-    object-fit: cover;
-    border-radius: 12px;
-}
-
-.noPhoto {
-    height: 160px;
-    border-radius: 12px;
-    background: #eef3ee;
-    color: #789;
+.topBar {
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: space-between;
+    gap: 10px;
 }
 
-.nickname {
-    margin: 12px 0 4px;
-    font-size: 26px;
-}
-
-.sub {
-    margin: 4px 0;
-    color: #555;
-    line-height: 1.5;
-}
-
-.card {
-    border: 1px solid #e0e6e0;
-    border-radius: 12px;
-    padding: 14px;
-    background: #fff;
-}
-
-.card h2 {
-    margin: 0 0 8px;
-    font-size: 18px;
-}
-
-.dday {
-    margin: 0 0 6px;
-    font-size: 24px;
-    font-weight: 700;
-    color: #2f6f46;
-}
-
-.buttons {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-    margin-top: 12px;
-}
-
-/* 버튼은 손가락으로 누르기 쉽게 높이 44px 이상 */
-.button,
-.primary,
-.danger {
-    min-height: 44px;
-    padding: 0 16px;
-    border-radius: 10px;
-    font-size: 15px;
-    cursor: pointer;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
+.back {
+    font-size: 14px;
+    font-weight: 600;
+    color: #4a5d50;
     text-decoration: none;
 }
 
-.button {
-    border: 1px solid #b9c7b9;
+.back:hover {
+    color: #2f6f46;
+}
+
+.topActions {
+    display: flex;
+    gap: 8px;
+}
+
+.smallButton,
+.smallDanger {
+    display: inline-flex;
+    align-items: center;
+    min-height: 34px;
+    padding: 0 14px;
+    border: 1px solid #c4d1c0;
+    border-radius: 999px;
     background: #fff;
-    color: #333;
+    color: #2f6f46;
+    font-size: 13px;
+    font-weight: 700;
+    font-family: inherit;
+    text-decoration: none;
+    cursor: pointer;
 }
 
-.primary {
-    border: none;
-    background: #3f8f5a;
-    color: #fff;
+.smallDanger {
+    border-color: #e3b4b2;
+    color: #c9302c;
 }
 
-.danger {
-    border: 1px solid #d9534f;
-    background: #fff;
-    color: #d9534f;
+.smallButton:hover {
+    background: #eef5ec;
 }
 
-.primary:disabled,
-.button:disabled,
-.danger:disabled {
+.smallDanger:hover {
+    background: #fdf1f0;
+}
+
+.smallDanger:disabled {
     opacity: 0.5;
     cursor: not-allowed;
 }
 
-.message {
-    margin: 10px 0 0;
+/* ---------------- 위쪽 : 사진, 이름, 요약 ---------------- */
+
+.hero {
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    gap: 22px;
+    padding: 20px;
+    border-radius: 18px;
+    background: #fff;
+    border: 1px solid #c9d5c5;
+    box-shadow: 0 3px 10px rgba(20, 40, 28, 0.10);
+}
+
+.photoWrap {
+    align-self: start;
+}
+
+/* 사진 전체가 버튼 : 누르면 대표 사진 변경 */
+.photoBox {
+    position: relative;
+    display: block;
+    width: 100%;
+    padding: 0;
+    aspect-ratio: 4 / 3;
+    overflow: hidden;
+    border-radius: 14px;
+    background: #dfe8dc;
+    border: 1px solid #d3ddcf;
+    cursor: pointer;
+}
+
+.photoBox:disabled {
+    cursor: wait;
+}
+
+/* 사진 아래쪽 "사진 변경" 띠 */
+.photoEdit {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    padding: 7px 0;
+    background: rgba(20, 40, 28, 0.55);
+    color: #fff;
+    font-size: 13px;
+    font-weight: 700;
+    text-align: center;
+}
+
+.photoBox:hover .photoEdit,
+.photoBox:focus-visible .photoEdit {
+    background: rgba(20, 40, 28, 0.78);
+}
+
+.photoNote,
+.photoNoteError {
+    margin: 8px 0 0;
+    font-size: 13px;
+}
+
+.photoNote {
+    color: #1f5a38;
+}
+
+.photoNoteError {
+    color: #c9302c;
+}
+
+.noPhoto {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 52px;
+    background: linear-gradient(135deg, #e3efe3, #cfe3d1);
+}
+
+.photo {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: cover;
+}
+
+.heroBody {
+    min-width: 0;
+}
+
+.heroTop {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.eyebrowRow {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.eyebrow {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
     color: #2f6f46;
 }
 
-.info {
-    margin: 0;
-    padding-left: 18px;
-    line-height: 1.7;
+.ddayPill {
+    padding: 2px 10px;
+    border-radius: 999px;
+    background: #d6ecdb;
+    color: #1f5a38;
+    font-size: 12px;
+    font-weight: 800;
 }
 
-.form {
+.speciesTopButton {
+    min-height: 34px;
+    padding: 0 14px;
+    border: 1px solid #b9d3bd;
+    border-radius: 999px;
+    background: #e3f1e5;
+    color: #1f5a38;
+    font-size: 13px;
+    font-weight: 700;
+    font-family: inherit;
+    cursor: pointer;
+}
+
+.speciesTopButton:hover {
+    background: #d3e9d7;
+}
+
+.nickname {
+    margin: 8px 0 2px;
+    font-size: 34px;
+    line-height: 1.15;
+    color: #14281c;
+}
+
+.scientific {
+    margin: 0;
+    color: #55645a;
+    font-style: italic;
+}
+
+.speciesName {
+    margin: 0;
+    color: #55645a;
+}
+
+.chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 14px;
+}
+
+.chip {
+    padding: 3px 12px;
+    border-radius: 999px;
+    background: #e8eee5;
+    border: 1px solid #d3ddcf;
+    color: #3d5043;
+    font-size: 12px;
+}
+
+/* 요약 : 한 덩어리 안에 세 칸 + 세로 구분선 */
+.summary {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    margin-top: 16px;
+    border: 1px solid #cdd8c9;
+    border-radius: 14px;
+    background: #f4f7f2;
+    overflow: hidden;
+}
+
+.summaryCell {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 12px 16px;
+    border-left: 1px solid #cdd8c9;
+}
+
+.summaryCell:first-child {
+    border-left: none;
+}
+
+.summaryLabel {
+    font-size: 12px;
+    color: #5d6e62;
+}
+
+.summaryValue {
+    font-size: 17px;
+    font-weight: 800;
+    color: #14281c;
+}
+
+.summaryValueText {
+    font-size: 15px;
+    font-weight: 800;
+    color: #14281c;
+}
+
+/* ---------------- 아래 : 2열 ---------------- */
+
+.layout {
+    display: grid;
+    grid-template-columns: 1.5fr 1fr;
+    gap: 16px;
+    align-items: start;
+}
+
+.column {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    min-width: 0;
+}
+
+.card {
+    padding: 18px;
+    border-radius: 18px;
+    background: #fff;
+    border: 1px solid #c9d5c5;
+    box-shadow: 0 3px 10px rgba(20, 40, 28, 0.10);
+}
+
+.cardHead {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 14px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #d3ddcf;      /* 제목 아래 줄로 구역을 나눔 */
+}
+
+.cardTitle {
+    margin: 0;
+    font-size: 17px;
+}
+
+.titleLabel {
+    margin-left: 6px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    color: #7a8c7f;
+}
+
+.badge {
+    padding: 2px 10px;
+    border-radius: 999px;
+    background: #d6ecdb;
+    color: #1f5a38;
+    font-size: 12px;
+    font-weight: 800;
+}
+
+.linkButton {
+    padding: 4px 12px;
+    border: none;
+    border-radius: 999px;
+    background: #e3f1e5;
+    color: #1f5a38;
+    font-size: 13px;
+    font-weight: 700;
+    font-family: inherit;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.linkButton:hover {
+    background: #d3e9d7;
+}
+
+/* ---------------- 물주기 · 관리 기록 ---------------- */
+
+.buttons {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+}
+
+/* 버튼은 누르기 쉽게 높이 44px 이상 */
+.button,
+.primary {
+    min-height: 46px;
+    padding: 0 10px;
+    border-radius: 12px;
+    font-size: 14px;
+    font-weight: 700;
+    font-family: inherit;
+    cursor: pointer;
+}
+
+.button {
+    border: 1px solid #c4d1c0;
+    background: #fff;
+    color: #1c2b21;
+}
+
+.button:hover {
+    background: #eef5ec;
+}
+
+.primary {
+    border: none;
+    background: #1d4a34;
+    color: #fff;
+}
+
+.primary:hover {
+    background: #163a29;
+}
+
+.primary:disabled,
+.button:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+}
+
+.lastRow {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    margin-top: 14px;
+    border: 1px solid #d3ddcf;
+    border-radius: 12px;
+    background: #f4f7f2;
+    overflow: hidden;
+}
+
+.lastCell {
+    display: flex;
+    justify-content: space-between;
+    gap: 8px;
+    padding: 10px 14px;
+    border-left: 1px solid #d3ddcf;
+    font-size: 13px;
+    color: #5d6e62;
+}
+
+.lastCell:first-child {
+    border-left: none;
+}
+
+.lastCell strong {
+    color: #1c2b21;
+    font-weight: 700;
+    text-align: right;
+}
+
+.message {
+    margin: 12px 0 0;
+    padding: 8px 12px;
+    border-radius: 10px;
+    background: #e3f1e5;
+    color: #1f5a38;
+    font-size: 14px;
+}
+
+/* ---------------- 도감 정보 ---------------- */
+
+.tiles {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+}
+
+.tile {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 12px;
+    border: 1px solid #d3ddcf;
+    border-radius: 12px;
+    background: #f4f7f2;
+}
+
+.tileLabel {
+    font-size: 12px;
+    color: #5d6e62;
+}
+
+.tileValue {
+    font-size: 14px;
+    font-weight: 800;
+    color: #14281c;
+}
+
+.speciesDesc {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;              /* 두 줄까지만 보여 주고 나머지는 … 처리 */
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    margin: 12px 0 0;
+    font-size: 13px;
+    line-height: 1.6;
+    color: #55645a;
+}
+
+/* ---------------- 이상 기록 (오른쪽) ---------------- */
+
+.issueCard {
+    overflow: hidden;
+    border-radius: 18px;
+    background: #fff;
+    border: 1px solid #c9d5c5;
+    box-shadow: 0 3px 10px rgba(20, 40, 28, 0.10);
+}
+
+.issueHead {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 14px 18px;
+    background: #2c322d;
+    color: #fff;
+}
+
+.issueTitle {
+    font-size: 16px;
+    font-weight: 800;
+}
+
+.issueLabel {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    color: #aebbb0;
+}
+
+.issueBody {
     display: flex;
     flex-direction: column;
     gap: 8px;
-    margin-top: 8px;
+    padding: 16px 18px;
 }
 
-.form textarea {
-    padding: 8px;
-    border: 1px solid #c8d2c8;
+.issueHint {
+    margin: 0 0 4px;
+    font-size: 13px;
+    color: #5d6e62;
+}
+
+.fieldLabel {
+    margin-top: 4px;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+/* 사진 선택 : 기본 파일 입력칸은 숨기고 점선 상자를 누르면 선택창이 열림 */
+.fileBox {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    padding: 16px 10px;
+    border: 2px dashed #b3c4ae;
+    border-radius: 12px;
+    background: #f4f7f2;
+    font-size: 14px;
+    text-align: center;
+    cursor: pointer;
+}
+
+.fileBox:hover {
+    background: #eaf2e7;
+}
+
+.fileIcon {
+    font-size: 20px;
+}
+
+.fileHint {
+    font-size: 12px;
+    color: #7a8c7f;
+}
+
+.previewImg {
+    display: block;
+    width: 100%;
+    max-height: 180px;
+    margin-bottom: 6px;
     border-radius: 8px;
-    font-size: 15px;
+    object-fit: cover;
+}
+
+.fileInput {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    opacity: 0;
+    overflow: hidden;
+}
+
+.fileInput:focus-visible + .fileBox,
+.fileBox:focus-within {
+    border-color: #2f6f46;
+}
+
+.textarea {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 10px 12px;
+    border: 1px solid #c4d1c0;
+    border-radius: 12px;
+    background: #fff;
+    font-size: 14px;
     font-family: inherit;
     resize: vertical;
 }
 
+.textarea:focus {
+    outline: none;
+    border-color: #2f6f46;
+    box-shadow: 0 0 0 3px rgba(47, 111, 70, 0.18);
+}
+
 .error {
     margin: 0;
-    color: #d9534f;
-}
-
-.rowBetween {
-    display: flex;
-    justify-content: space-between;
-    align-items: baseline;
-}
-
-.bottom {
-    display: flex;
-    gap: 8px;
-    justify-content: flex-end;
-    padding-bottom: 24px;
-}
-
-/* 마지막으로 비료 준 날 / 분갈이 한 날 */
-.last {
-    margin: 12px 0 0;
-    font-size: 14px;
-    line-height: 1.6;
-    color: #555;
-}
-
-
-
-/* =====================================
-   도감 정보 상세 보기 버튼
-===================================== */
-
-.speciesOpenButton {
-    width: 100%;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 12px;
-    padding: 12px 4px;
-
-    border: none;
-    background: transparent;
-
-    /* 기본 글씨는 진한 차콜 */
-    color: #29322D;
-    font-size: 17px;
-    font-weight: 600;
-    cursor: pointer;
-    text-align: left;
-}
-
-/* 상세 보기 텍스트만 포인트 초록색 */
-.speciesOpenButton span:last-child {
-    color: #438557;
-    font-size: 14px;
-    font-weight: 500;
-}
-
-.speciesOpenButton:hover span:last-child {
-    color: #2F6943;
-    text-decoration: underline;
-}
-
-.speciesOpenButton:focus-visible {
-    outline: 2px solid #438557;
-    outline-offset: 4px;
-    border-radius: 6px;
-}
-
-
-/* =====================================
-   도감 상세 모달창
-===================================== */
-
-.speciesDialog {
-    width: min(700px, calc(100% - 32px));
-    max-height: 85vh;
-    max-height: 85dvh;
-
-    padding: 28px;
-    margin: auto;
-
-    border: 1px solid #E5EAE5;
-    border-radius: 20px;
-
-    /* 밝은 배경 + 진한 기본 글씨 */
-    background-color: #FFFFFF;
-    color: #303833;
-
-    overflow-y: auto;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.18);
-}
-
-/* 모달 바깥쪽 어두운 배경 */
-.speciesDialog::backdrop {
-    background: rgba(24, 30, 26, 0.55);
-}
-
-
-/* =====================================
-   모달 상단 제목
-===================================== */
-
-.speciesDialogHeader {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    gap: 12px;
-
-    margin-bottom: 22px;
-    padding-bottom: 18px;
-
-    border-bottom: 1px solid #E9EDE9;
-}
-
-/* 식물 이름 */
-.speciesDialogHeader h2 {
-    margin: 0;
-    color: #242B27;
-    font-size: 24px;
-    font-weight: 700;
-}
-
-/* 상단 설명 */
-.speciesDialogHeader p {
-    margin-top: 6px;
-    color: #848C86;
+    padding: 8px 12px;
+    border-radius: 10px;
+    background: #fdecea;
+    color: #c9302c;
     font-size: 13px;
 }
 
-/* X 닫기 버튼 */
-.speciesDialogHeader button {
-    width: 36px;
-    height: 36px;
-
+.issueSubmit {
+    min-height: 46px;
+    margin-top: 4px;
     border: none;
-    border-radius: 50%;
-
-    background: #F3F5F3;
-    color: #606963;
-
-    font-size: 19px;
+    border-radius: 12px;
+    background: #2c322d;
+    color: #fff;
+    font-size: 14px;
+    font-weight: 700;
+    font-family: inherit;
     cursor: pointer;
 }
 
-.speciesDialogHeader button:hover {
-    background: #E8ECE8;
-    color: #242B27;
+.issueSubmit:hover {
+    background: #1f241f;
 }
 
+.issueSubmit:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+}
 
-/* =====================================
-   도감 식물 이미지
-===================================== */
+.issueFooter {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    padding: 12px 18px;
+    border-top: 1px solid #d3ddcf;
+    background: #eef2ec;
+    font-size: 13px;
+    color: #4a5d50;
+}
+
+.aiChip {
+    min-height: 30px;
+    padding: 0 12px;
+    border: none;
+    border-radius: 999px;
+    background: #d6ecdb;
+    color: #1f5a38;
+    font-size: 12px;
+    font-weight: 700;
+    font-family: inherit;
+    cursor: pointer;
+}
+
+.aiNotice {
+    margin: 0;
+    padding: 10px 18px;
+    background: #eef2ec;
+    border-top: 1px solid #d3ddcf;
+    font-size: 13px;
+    color: #4a5d50;
+}
+
+/* ---------------- 도감 상세 모달 ---------------- */
+
+.speciesDialog {
+    /* 전체 초기화(margin: 0)가 있어도 가운데에 오도록 직접 지정 */
+    position: fixed;
+    inset: 0;
+    margin: auto;
+    height: fit-content;
+    width: min(640px, calc(100vw - 32px));
+    max-height: calc(100vh - 48px);
+    padding: 0;
+    border: 1px solid #c9d5c5;
+    border-radius: 18px;
+    background: #fff;
+    color: #1c2b21;
+    overflow: auto;
+}
+
+.speciesDialog::backdrop {
+    background: rgba(20, 40, 28, 0.45);
+}
+
+.speciesDialogHeader {
+    position: sticky;
+    top: 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 14px 18px;
+    background: #1d4a34;
+    color: #fff;
+}
+
+.speciesDialogHeader h2 {
+    margin: 0;
+    font-size: 17px;
+}
+
+.speciesDialogHeader button {
+    width: 32px;
+    height: 32px;
+    border: none;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.18);
+    color: #fff;
+    font-size: 15px;
+    cursor: pointer;
+}
 
 .speciesDialogImage {
     display: block;
     width: 100%;
-    max-height: 250px;
-
-    object-fit: contain;
-    border-radius: 12px;
-
-    background: #F7F9F7;
-    margin-bottom: 24px;
+    max-height: 280px;
+    object-fit: cover;
 }
 
+.speciesDialogBody {
+    padding: 8px 18px 4px;
+}
 
-/* =====================================
-   도감 상세 정보 내용
-===================================== */
-
-/* 기본 정보, 생육 환경 등의 제목 */
 .speciesDialogBody h3 {
-    margin: 28px 0 14px;
-    padding-bottom: 10px;
-
-    color: #303833;
-    font-size: 17px;
-    font-weight: 700;
-
-    border-bottom: 1px solid #E5EAE5;
+    margin: 16px 0 8px;
+    padding-left: 10px;
+    border-left: 4px solid #2f6f46;
+    font-size: 15px;
 }
 
-/* 각 정보 목록 */
-.speciesDialogBody ul {
-    margin: 0;
-    padding-left: 20px;
-    list-style: disc;
-}
-
-/* 항목 텍스트는 초록이 아닌 진한 회색 */
-.speciesDialogBody li {
-    padding: 5px 0;
-    color: #4B5550;
-    font-size: 14px;
-    font-weight: 400;
-    line-height: 1.8;
-}
-
-/* 목록 점만 은은한 초록 */
-.speciesDialogBody li::marker {
-    color: #8AAC92;
-}
-
-/* 식물 특징 등 긴 설명 */
 .speciesDialogBody p {
-    color: #505A54;
-    font-size: 14px;
-    font-weight: 400;
-    line-height: 1.9;
-    white-space: pre-wrap;
-    overflow-wrap: anywhere;
+    margin: 0;
+    line-height: 1.6;
+    color: #3d5043;
 }
 
-
-/* =====================================
-   모달 하단 닫기 버튼
-===================================== */
+.info {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    font-size: 14px;
+    line-height: 1.5;
+    color: #3d5043;
+}
 
 .speciesModalBottomButton {
     display: block;
-    width: 100%;
-    margin-top: 30px;
-    padding: 14px;
-
+    width: calc(100% - 36px);
+    min-height: 44px;
+    margin: 16px 18px 18px;
     border: none;
-    border-radius: 10px;
-
-    /* 초록색은 주요 버튼에만 사용 */
-    background: #3F8056;
-    color: #FFFFFF;
-
-    font-size: 15px;
-    font-weight: 600;
+    border-radius: 12px;
+    background: #1d4a34;
+    color: #fff;
+    font-size: 14px;
+    font-weight: 700;
+    font-family: inherit;
     cursor: pointer;
-    transition: background-color 0.2s;
 }
 
-.speciesModalBottomButton:hover {
-    background: #326B45;
+/* ---------------- 대표 사진 변경 확인창 ---------------- */
+
+.photoDialog {
+    /* 전체 초기화(margin: 0)가 있어도 가운데에 오도록 직접 지정 */
+    position: fixed;
+    inset: 0;
+    margin: auto;
+    height: fit-content;
+    width: min(420px, calc(100vw - 32px));
+    padding: 20px;
+    border: 1px solid #c9d5c5;
+    border-radius: 18px;
+    background: #fff;
+    color: #1c2b21;
 }
 
+.photoDialog::backdrop {
+    background: rgba(20, 40, 28, 0.45);
+}
 
-/* =====================================
-   모바일 반응형
-===================================== */
+.photoDialogTitle {
+    margin: 0 0 14px;
+    font-size: 17px;
+}
 
-@media (max-width: 600px) {
-    .speciesDialog {
-        padding: 20px;
-        border-radius: 16px;
-    }
+.photoDialogImage {
+    display: block;
+    width: 100%;
+    max-height: 300px;
+    border-radius: 12px;
+    border: 1px solid #d3ddcf;
+    object-fit: cover;
+}
 
-    .speciesDialogHeader h2 {
-        font-size: 21px;
-    }
-
-    .speciesDialogBody h3 {
-        font-size: 16px;
-    }
-
-    .speciesDialogBody li {
-        font-size: 13px;
-    }
-
-    .speciesOpenButton {
-        font-size: 16px;
-    }
+.photoDialogButtons {
+    display: grid;
+    grid-template-columns: 1fr 1.4fr;
+    gap: 10px;
+    margin-top: 16px;
 }
