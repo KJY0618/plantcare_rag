@@ -4,172 +4,402 @@
 ===================================== */
 
 .page {
-    max-width: 640px;
-    margin: 0 auto;
-    padding: 16px;
-    display: flex;
-    flex-direction: column;
-    gap: 14px;
+    width: 100%;
+    min-height: calc(100vh - 60px);
+    background: #f7faf7;
+    color: #183323;
 }
 
 .state {
     text-align: center;
-    padding: 40px 0;
-    color: #666;
+    padding: 60px 20px;
+    color: #66776a;
 }
 
 /* =====================================
-   2. 식물 기본 정보
+   2. 상단 메뉴
 ===================================== */
 
-.head {
+.topBar {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 16px 16px;
     display: flex;
-    flex-direction: column;
     align-items: center;
-    text-align: center;
-    gap: 8px;
-    padding-bottom: 10px;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.backLink {
+    color: #47634f;
+    font-size: 13px;
+    text-decoration: none;
+}
+
+.backLink:hover {
+    text-decoration: underline;
+}
+
+.primary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 38px;
+    padding: 0 16px;
+    border: none;
+    border-radius: 9px;
+    background: #174d34;
+    color: #fff;
+    font-size: 13px;
+    font-weight: 700;
+    text-decoration: none;
+    white-space: nowrap;
+    cursor: pointer;
+}
+
+.primary:hover {
+    background: #286344;
+}
+
+/* =====================================
+   3. 식물 소개 영역
+===================================== */
+
+.hero {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 16px 20px;
+    display: grid;
+    grid-template-columns: 0.95fr 1.35fr;
+    gap: 24px;
+    align-items: center;
+}
+
+.heroImage {
+    width: 100%;
+    height: 210px;
+    overflow: hidden;
+    border-radius: 13px;
+    background: #edf3ed;
+}
+
+.photo,
+.noPhoto {
+    width: 100%;
+    height: 100%;
 }
 
 .photo {
-    width: 100%;
-    height: 280px;
+    display: block;
     object-fit: cover;
-    border-radius: 12px;
 }
 
 .noPhoto {
-    width: 100%;
-    height: 280px;
     display: flex;
     align-items: center;
     justify-content: center;
-    background: #f1f4ef;
-    border-radius: 12px;
     font-size: 60px;
+    background: #edf3ed;
+}
+
+.heroInfo {
+    min-width: 0;
+}
+
+.eyebrow {
+    margin-bottom: 7px;
+    color: #36734b;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1px;
 }
 
 .nickname {
-    margin: 8px 0 0;
-    font-size: 24px;
-    font-weight: 700;
+    margin: 0 0 4px;
+    color: #142d1e;
+    font-size: 28px;
+    font-weight: 800;
+    line-height: 1.3;
 }
 
-.sub {
+.scientificName {
+    margin: 0 0 3px;
+    color: #617769;
+    font-size: 12px;
+    font-style: italic;
+}
+
+.englishName {
     margin: 0;
-    color: #777;
-    font-size: 14px;
+    color: #617769;
+    font-size: 12px;
+}
+
+.summary {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    margin-top: 16px;
+    padding: 12px 0;
+    border: 1px solid #d5dfd4;
+    border-radius: 12px;
+    background: #f1f4f0;
+}
+
+.summaryItem {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    min-width: 0;
+    padding: 0 12px;
+    border-right: 1px solid #d5dfd4;
+}
+
+.summaryItem:last-child {
+    border-right: none;
+}
+
+.summaryItem span {
+    color: #6b7b6e;
+    font-size: 10px;
+}
+
+.summaryItem strong {
+    color: #203d2b;
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 1.5;
+    word-break: keep-all;
 }
 
 /* =====================================
-   3. 정보 카드
+   4. 상세 정보 전체 영역
+===================================== */
+
+.detailArea {
+    width: 100%;
+    padding: 20px max(calc((100% - 1100px) / 2), 16px) 50px;
+    display: grid;
+    grid-template-columns: 1.35fr 0.95fr;
+    gap: 16px;
+    align-items: start;
+    border-top: 1px solid #e0e8df;
+    background: #f7faf7;
+}
+
+.leftColumn,
+.rightColumn {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    min-width: 0;
+}
+
+/* =====================================
+   5. 정보 카드
 ===================================== */
 
 .card {
-    background: #fff;
-    border: 1px solid #e5e5e5;
+    min-width: 0;
+    padding: 16px;
+    border: 1px solid #d3ded2;
     border-radius: 12px;
-    padding: 18px;
+    background: #fff;
 }
 
 .card h2 {
-    margin: 0 0 16px;
-    font-size: 18px;
-    font-weight: 700;
+    margin: 0 0 12px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #dce6dc;
+    color: #193b27;
+    font-size: 15px;
+    font-weight: 800;
 }
 
 /* =====================================
-   4. 정보 목록
+   6. 기본 정보
 ===================================== */
 
-.info {
-    display: flex;
-    flex-direction: column;
-    gap: 14px;
+.basicGrid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 5px;
 }
 
 .infoItem {
     display: flex;
     flex-direction: column;
-    gap: 6px;
+    gap: 4px;
+    min-width: 0;
+}
+
+.basicGrid .infoItem {
+    min-height: 43px;
+    padding: 7px 9px;
+    border-radius: 8px;
+    background: #f1f3f0;
 }
 
 .infoLabel {
-    color: #777;
-    font-size: 13px;
+    color: #68796c;
+    font-size: 10px;
     font-weight: 600;
 }
 
 .infoValue {
-    color: #333;
-    font-size: 14px;
-    line-height: 1.6;
+    color: #253d2d;
+    font-size: 12px;
+    line-height: 1.5;
     white-space: pre-wrap;
     word-break: keep-all;
 }
 
 /* =====================================
-   5. 태그 목록
+   7. 생육 환경
 ===================================== */
+
+.environmentInfo {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
 
 .tagList {
     display: flex;
     flex-wrap: wrap;
-    gap: 6px;
+    gap: 5px;
 }
 
 .tag {
-    padding: 6px 10px;
-    background: #f1f5ef;
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 9px;
+    border: 1px solid #d7e0d4;
     border-radius: 20px;
-    color: #4b684b;
-    font-size: 13px;
+    background: #f1f4ef;
+    color: #405d47;
+    font-size: 10px;
     line-height: 1.4;
 }
 
 /* =====================================
-   6. 식물 특징
+   8. 계절별 물주기
+===================================== */
+
+.seasonGrid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 5px;
+}
+
+.seasonGrid .infoItem {
+    min-height: 62px;
+    padding: 10px;
+    border: 1px solid #d5ded4;
+    border-radius: 9px;
+    background: #f2f4f1;
+}
+
+.seasonGrid .infoLabel {
+    color: #315b3d;
+    font-size: 11px;
+    font-weight: 800;
+}
+
+.seasonGrid .infoValue {
+    font-size: 11px;
+    line-height: 1.5;
+}
+
+/* =====================================
+   9. 관리 정보
+===================================== */
+
+.manageInfo {
+    display: flex;
+    flex-direction: column;
+}
+
+.manageInfo .infoItem {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    padding: 6px 0;
+    border-bottom: 1px solid #e2e8e1;
+}
+
+.manageInfo .infoItem:last-child {
+    border-bottom: none;
+}
+
+.manageInfo .infoLabel {
+    color: #68796c;
+    font-size: 11px;
+}
+
+.manageInfo .infoValue {
+    text-align: right;
+    font-size: 11px;
+}
+
+/* =====================================
+   10. 식물 특징
 ===================================== */
 
 .description {
     margin: 0;
-    color: #444;
-    font-size: 14px;
+    color: #455e4b;
+    font-size: 12px;
     line-height: 1.8;
     white-space: pre-wrap;
     word-break: keep-all;
 }
 
 /* =====================================
-   7. 하단 버튼
+   11. 작은 화면
 ===================================== */
 
-.bottom {
-    display: flex;
-    gap: 10px;
-    margin-top: 4px;
+@media (max-width: 800px) {
+    .hero {
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+    }
+
+    .detailArea {
+        grid-template-columns: 1fr;
+    }
 }
 
-.button {
-    min-height: 44px;
-    padding: 0 16px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border: none;
-    border-radius: 8px;
-    text-decoration: none;
-    font-size: 14px;
-    font-weight: 600;
-    cursor: pointer;
-}
+@media (max-width: 520px) {
+    .topBar {
+        padding: 14px 16px;
+    }
 
-.primary {
-    flex: 1;
-    background: #527b50;
-    color: #fff;
-}
+    .hero {
+        grid-template-columns: 1fr;
+        padding-bottom: 18px;
+    }
 
-.primary:hover {
-    background: #426541;
+    .heroImage {
+        height: 220px;
+    }
+
+    .nickname {
+        font-size: 25px;
+    }
+
+    .summaryItem {
+        padding: 0 7px;
+    }
+
+    .summaryItem strong {
+        font-size: 11px;
+    }
+
+    .detailArea {
+        padding: 16px;
+    }
+
+    .card {
+        padding: 14px;
+    }
 }
