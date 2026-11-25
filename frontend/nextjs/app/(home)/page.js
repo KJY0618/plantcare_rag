@@ -6,6 +6,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { getToday, waterPlant } from "@/service/careApi";
 import styles from "./home.module.css";
+import { openChat } from "@/service/chatApi";
 
 const API = process.env.NEXT_PUBLIC_API_SERVER;
 
@@ -100,7 +101,6 @@ export default function HomePage() {
   const [wateringId, setWateringId] = useState(null); // 물주기 처리 중인 식물 번호
   const [filter, setFilter] = useState("all");        // 카드 필터 (all / now / wait / issue)
   const [sort, setSort] = useState("date");           // 카드 정렬 (date / name)
-  const [aiNotice, setAiNotice] = useState(false);    // "AI 준비 중" 안내를 보여 줄지
   const [showAllWait, setShowAllWait] = useState(false); // 여유 구역을 전부 펼쳤는지
 
   // 서버에서 오늘 할 일 목록을 받아옴
@@ -360,15 +360,13 @@ export default function HomePage() {
             {/* 아래 줄 : AI 도우미 입구 */}
             <div className={styles.tipFooter}>
               <span>내 식물 기준 맞춤 주기가 궁금하다면</span>
-              <button className={styles.aiButton} onClick={() => setAiNotice(true)}>
+              <button
+                className={styles.aiButton}
+                onClick={() => openChat("가을에는 우리 집 식물 물을 어떻게 줘야 해?")}
+              >
                 AI에게 물어보기
               </button>
             </div>
-            {aiNotice && (
-              <p className={styles.aiNotice} role="status">
-                AI 도우미는 준비 중이에요. 조금만 기다려 주세요.
-              </p>
-            )}
           </aside>
 
           {plants.length > 0 && (
