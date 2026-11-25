@@ -4,6 +4,7 @@
 from datetime import date, datetime, timedelta
 
 from service import json_store
+from service.photos import delete_photo
 
 
 # ---------------------------------------------------------------
@@ -81,6 +82,8 @@ def delete_logs_of_plant(plant_id):
     for log in care_logs:                      # 2. 이 식물이 아닌 기록만 남김
         if log["plant_id"] != plant_id:
             remain.append(log)
+        else:
+            delete_photo(log["photo_path"])    #    이 식물의 기록에 올린 사진 파일도 지움
     json_store.save("care_logs", remain)       # 3. 전체 저장
 
 
@@ -110,6 +113,7 @@ def delete_log(plant_id, log_id):
         if log["id"] != log_id:
             remain.append(log)
     json_store.save("care_logs", remain)
+    delete_photo(target["photo_path"])         # 4. 이상 기록에 올린 사진 파일도 지움 (사진이 없으면 그냥 넘어감)
     return target
 
 
