@@ -402,5 +402,45 @@ def delete_plant_log(plant_id: int, log_id: int):
         raise HTTPException(409, "마지막 물주기 기록은 지울 수 없습니다. 다음 물주기 계산에 필요합니다.")
     return {"deleted_id": log_id}
 
-# ===== 식물 도우미 (A, 2단계) =====
-# ==========================================
+# ===== 식물 도우미 질문 =====
+# 질문 글자를 받아서 답변(answer)과 근거(sources)를 돌려줌
+# 지금은 가짜 답변 (나중에 service/rag_plants.py 의 함수로 바꿀 예정)
+
+# 챗봇이 받는 질문 모양 : {"question": "..."}
+class ChatRequest(BaseModel):
+    question: str
+
+
+@app.post("/chat")
+def chat(body: ChatRequest):
+    question = body.question.strip()
+
+    #빈 질문은 받지 않음
+    if question == "":
+        # raise : 일부러 오류를 일으켜서 지금 하던 일을 멈추는 명령어
+        raise HTTPException(422, "질문을 입력해 주세요.")
+
+    try:
+        from service import rag_plants
+        rag_plants.ensure_species_db()              # 도감 DB가 비어 있으면 만듦
+        return rag_plants.answer_question(question)
+    except Exception:
+        import traceback
+        traceback.print_exc()                       # 원인은 서버 화면(터미널)에 남김
+        raise HTTPException(503, "AI 도우미를 지금 사용할 수 없어요. 잠시 뒤에 다시 시도해 주세요.")
+
+# 도감 검색 데이터를 다시 만든다 (도감 JSON 이 바뀌었을 때만 부르면 됨)
+# 도감 검색 데이터(Chroma)를 다시 만든다.
+# 자동으로 실행되지 않는다. 도감 JSON(species.json)을 바꿨을 때만 직접 한 번 실행한다.
+#   - Swagger(/docs)에서 POST /rag/rebuild 실행하거나
+#   - 터미널에서: python -c "from service import rag_plants; print(rag_plants.rebuild_species_db())"
+@app.post("/rag/rebuild")
+def rag_rebuild():
+    try:
+        from service import rag_plants
+        species_docs = rag_plants.rebuild_species_db()
+    except Exception:
+        import traceback
+        traceback.print_exc()
+        raise HTTPException(503, "검색 데이터를 다시 만들지 못했어요.")
+    return {"species_docs": species_docs, "care_docs": 0, "failed": []}
