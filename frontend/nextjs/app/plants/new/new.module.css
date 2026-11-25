@@ -1,6 +1,354 @@
-.form { display: grid; gap: 16px; max-width: 480px; margin: 0 auto; padding: 16px; }
-.form label { display: grid; gap: 6px; }
-.form input { width: 100%; padding: 10px; font-size: 16px; box-sizing: border-box; }
-.form button { padding: 12px; font-size: 16px; }
-.error { color: crimson; }
-.hint { color: #666; font-size: 14px; }
+/* 내 식물 추가 화면 (웹 전용) : 홈, 상세 화면과 같은 색을 사용 */
+
+.wrap {
+    color: #1c2b21;
+    word-break: keep-all;             /* 한글이 단어 중간에서 줄바꿈되지 않게 함 */
+}
+
+/* ---------------- 위쪽 제목 영역 ---------------- */
+
+.top {
+    background: #fff;
+    border-bottom: 1px solid #dfe6dc;
+}
+
+.topInner {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 22px 16px 26px;
+}
+
+.topBar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 22px;
+}
+
+.back {
+    font-size: 14px;
+    font-weight: 600;
+    color: #4a5d50;
+}
+
+.back:hover {
+    color: #1d4a34;
+}
+
+.legend {
+    font-size: 12px;
+    color: #6b7b70;
+}
+
+.star {
+    color: #b4531a;
+    font-weight: 700;
+}
+
+.eyebrow {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    color: #2f7a52;
+}
+
+.title {
+    margin: 4px 0 8px;
+    font-size: 32px;
+    line-height: 1.2;
+    color: #14281c;
+}
+
+.subtitle {
+    font-size: 14px;
+    color: #5b6c61;
+}
+
+/* ---------------- 본문 : 왼쪽 입력, 오른쪽 사진 ---------------- */
+
+.form {
+    display: grid;
+    grid-template-columns: 1.6fr 1fr;
+    gap: 16px;
+    align-items: start;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 20px 16px 48px;
+}
+
+.column {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    min-width: 0;
+}
+
+.card {
+    padding: 18px;
+    border-radius: 18px;
+    background: #fff;
+    border: 1px solid #c9d5c5;
+    box-shadow: 0 3px 10px rgba(20, 40, 28, 0.10);
+}
+
+.cardHead {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 14px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #e3eae0;
+}
+
+.cardTitle {
+    font-size: 17px;
+    color: #14281c;
+}
+
+/* 도감 찾기 버튼 (링크) */
+.findButton {
+    padding: 5px 12px;
+    border-radius: 999px;
+    border: 1px solid #c9d5c5;
+    background: #eef2ec;
+    font-size: 12px;
+    font-weight: 700;
+    color: #1d4a34;
+}
+
+.findButton:hover {
+    background: #e1eadd;
+}
+
+/* ---------------- 입력칸 ---------------- */
+
+.grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px 16px;
+}
+
+.field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    min-width: 0;
+}
+
+.label {
+    font-size: 12px;
+    font-weight: 700;
+    color: #3d5044;
+}
+
+.input {
+    width: 100%;
+    padding: 11px 12px;
+    border: 1px solid transparent;
+    border-radius: 10px;
+    background: #eef2ec;
+    font-size: 14px;
+    color: #1c2b21;
+}
+
+.input::placeholder {
+    color: #8a998f;
+}
+
+.input:focus {
+    outline: none;
+    border-color: #1d4a34;
+    background: #fff;
+}
+
+.hint {
+    margin-top: 8px;
+    font-size: 12px;
+    line-height: 1.5;
+    color: #6b7b70;
+}
+
+/* 도감에서 고른 식물 이름 (입력칸과 높이를 맞춤) */
+.speciesBox {
+    display: flex;
+    align-items: center;
+    height: 40px;
+    padding: 0 12px;
+    border-radius: 10px;
+    background: #eaf3ec;
+    font-size: 14px;
+    font-weight: 700;
+    color: #1d4a34;
+}
+
+/* 도감 계절 물주기 참고 문구 */
+.speciesHint {
+    margin-top: 14px;
+    padding: 10px 12px;
+    border-radius: 10px;
+    background: #f4f7f2;
+    font-size: 13px;
+    line-height: 1.5;
+    color: #3d5044;
+}
+
+/* ---------------- 빠른 선택 버튼 ---------------- */
+
+.chips {
+    display: flex;
+    gap: 6px;
+}
+
+.chip {
+    padding: 4px 11px;
+    border: 1px solid #c9d5c5;
+    border-radius: 999px;
+    background: #fff;
+    font-size: 12px;
+    font-weight: 700;
+    color: #3d5044;
+    cursor: pointer;
+}
+
+.chip:hover {
+    background: #eef2ec;
+}
+
+.chipOn {
+    border-color: #1d4a34;
+    background: #1d4a34;
+    color: #fff;
+}
+
+.chipOn:hover {
+    background: #163a29;
+}
+
+/* ---------------- 대표 사진 ---------------- */
+
+.hiddenInput {
+    display: none;
+}
+
+.photoBox {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    width: 100%;
+    min-height: 190px;
+    border: 1px dashed #b7c7b4;
+    border-radius: 14px;
+    background: #eef2ec;
+    font-size: 14px;
+    color: #1c2b21;
+    cursor: pointer;
+}
+
+.photoBox:hover {
+    background: #e4ece1;
+}
+
+.photoIcon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: #d6e8da;
+    font-size: 20px;
+}
+
+.photoRule {
+    font-size: 11px;
+    color: #6b7b70;
+}
+
+.preview {
+    display: block;
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+    border-radius: 14px;
+    background: #eef2ec;
+}
+
+.photoButtons {
+    display: flex;
+    gap: 8px;
+    margin-top: 10px;
+}
+
+.smallButton {
+    flex: 1;
+    padding: 8px 0;
+    border: 1px solid #c9d5c5;
+    border-radius: 10px;
+    background: #fff;
+    font-size: 13px;
+    font-weight: 600;
+    color: #3d5044;
+    cursor: pointer;
+}
+
+.smallButton:hover {
+    background: #eef2ec;
+}
+
+/* ---------------- 아래 버튼 ---------------- */
+
+.actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+.cancel {
+    padding: 11px 22px;
+    border: 1px solid #c9d5c5;
+    border-radius: 999px;
+    background: #fff;
+    font-size: 14px;
+    font-weight: 700;
+    color: #3d5044;
+}
+
+.cancel:hover {
+    background: #eef2ec;
+}
+
+.submit {
+    padding: 11px 24px;
+    border: none;
+    border-radius: 999px;
+    background: #1d4a34;
+    font-size: 14px;
+    font-weight: 700;
+    color: #fff;
+    cursor: pointer;
+}
+
+.submit:hover {
+    background: #163a29;
+}
+
+.submit:disabled {
+    background: #9db3a5;
+    cursor: not-allowed;
+}
+
+/* ---------------- 오류 ---------------- */
+
+.error {
+    font-size: 13px;
+    color: #c0392b;
+}
+
+.errorLink {
+    font-weight: 700;
+    text-decoration: underline;
+}
