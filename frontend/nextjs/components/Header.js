@@ -1,7 +1,6 @@
-// 상단 메뉴
 "use client";
 
-// 위쪽 메뉴 : 모든 화면에서 보임. 지금 있는 화면의 메뉴는 진하게 표시함
+// 위쪽 메뉴 : 모든 화면에서 보임. 지금 있는 화면의 메뉴는 알약 모양으로 표시함
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -27,20 +26,23 @@ export default function Header() {
 
     return (
         <header className={styles.header}>
-            <Link href="/" className={styles.logo}>
-                🌱 PlantCare
-            </Link>
-            <nav className={styles.nav}>
-                {MENUS.map((menu) => (
-                    <Link
-                        key={menu.href}
-                        href={menu.href}
-                        className={isActive(menu.href) ? styles.active : styles.link}
-                    >
-                        {menu.label}
-                    </Link>
-                ))}
-            </nav>
+            <div className={styles.inner}>
+                <Link href="/" className={styles.logo}>
+                    <span className={styles.logoIcon}>🌱</span>
+                    PlantCare
+                </Link>
+                <nav className={styles.nav}>
+                    {MENUS.map((menu) => (
+                        <Link
+                            key={menu.href}
+                            href={menu.href}
+                            className={isActive(menu.href) ? styles.active : styles.link}
+                        >
+                            {menu.label}
+                        </Link>
+                    ))}
+                </nav>
+            </div>
         </header>
     );
 }
