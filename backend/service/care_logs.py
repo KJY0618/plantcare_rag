@@ -320,7 +320,7 @@ def get_plant_detail(plant_id):
         last_watered_at = last_watered.isoformat()
         next_water_date = next_date.isoformat()
 
-    recent_logs = get_log_list(plant_id)[:5]   # 최근 기록 5건
+    recent_logs = get_log_list(plant_id)[:3]   # 최근 기록 3건
 
     return {
         "id": plant["id"],
