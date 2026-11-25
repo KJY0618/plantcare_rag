@@ -19,7 +19,9 @@ import {
     makePhotoUrl,
     waterPlant,
 } from "@/service/careApi";
-import { updatePlant } from "@/service/plantsApi";   // B 담당 : 식물 수정 (사진만 보내서 대표 사진 변경에 사용)
+import { updatePlant } from "@/service/plantsApi";
+import { openChat } from "@/service/chatApi";
+
 import styles from "./detail.module.css";
 
 // 도감 값이 비어 있으면 "정보 없음" 으로 보여 줌
@@ -122,7 +124,6 @@ export default function PlantDetailPage() {
     const [error, setError] = useState("");        // 불러오기 실패 이유
     const [message, setMessage] = useState("");    // 버튼을 누른 결과 안내
     const [saving, setSaving] = useState(false);   // 저장 중이면 버튼 잠금
-    const [aiNotice, setAiNotice] = useState(false); // "AI 준비 중" 안내를 보여 줄지
     const [photoNote, setPhotoNote] = useState("");  // 대표 사진 변경 결과 안내
     const [photoError, setPhotoError] = useState(false); // 안내가 오류인지
     const [pendingFile, setPendingFile] = useState(null);   // 확인창에서 기다리는 사진 파일
@@ -693,16 +694,14 @@ export default function PlantDetailPage() {
                         <button
                             type="button"
                             className={styles.aiChip}
-                            onClick={() => setAiNotice(true)}
+                            onClick={() =>
+                                openChat("'" + plant.nickname + "'의 잎이 노랗게 변했어요. 원인이 뭘까요?")
+                            }
                         >
                             AI에게 증상 물어보기
                         </button>
                     </div>
-                    {aiNotice && (
-                        <p className={styles.aiNotice} role="status">
-                            AI 도우미는 준비 중이에요. 조금만 기다려 주세요.
-                        </p>
-                    )}
+                    
                 </aside>
             </div>
 
