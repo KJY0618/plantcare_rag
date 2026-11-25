@@ -70,7 +70,7 @@ def _list_item(plant):
     if plant["photo_path"]:
         photo_url = f"/uploads/{plant['photo_path']}"
     else:
-        photo_url = species["thumb_url"] if species else None
+        photo_url = species["image_url"] if species else None
 
     return {
         "id": plant["id"],

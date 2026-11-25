@@ -52,7 +52,7 @@ export default function PlantCard({ plant }) {
             background: "#eef4ec"
           }}
         >
-          🪴
+          🌿
         </div>
       )}
 

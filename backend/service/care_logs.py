@@ -274,7 +274,7 @@ def get_today_list():
         if plant["photo_path"]:
             photo_url = "/uploads/" + plant["photo_path"]
         elif species:
-            photo_url = species["thumb_url"]
+            photo_url = species["image_url"]
 
         # 도감의 현재 계절 물주기 문구
         season_water_text = None
@@ -312,7 +312,7 @@ def get_plant_detail(plant_id):
     if plant["photo_path"]:
         photo_url = "/uploads/" + plant["photo_path"]
     elif species:
-        photo_url = species["thumb_url"]
+        photo_url = species["image_url"]
 
     # 다음 물주기 (물주기 기록이 없으면 None)
     last_watered_at = None
