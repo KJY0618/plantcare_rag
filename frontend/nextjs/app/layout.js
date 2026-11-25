@@ -3,6 +3,7 @@
 
 import "./globals.css";
 import Header from "@/components/Header";
+import ChatWidget from "@/components/chat/ChatWidget";   // 오른쪽 아래 챗봇 창
 
 // 브라우저 탭에 보이는 제목과 설명
 export const metadata = {
@@ -16,6 +17,7 @@ export default function RootLayout({ children }) {
             <body>
                 <Header />
                 {children}
+                <ChatWidget />
             </body>
         </html>
     );
